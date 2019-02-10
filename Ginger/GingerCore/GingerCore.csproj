@@ -876,7 +876,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="DLLs\Interop.TDAPIOLELib.dll" />
-    <Content Include="DLLs\LibGit2Sharp.dll" />
+    <Content Include="DLLs\LibGit2Sharp.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="DLLs\ObjectsUtils.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

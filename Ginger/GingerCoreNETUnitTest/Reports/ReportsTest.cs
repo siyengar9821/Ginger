@@ -36,8 +36,7 @@ namespace Ginger.Reports.Tests
         [TestMethod]  [Timeout(60000)]
         public void BusinessflowReportTest()
         {
-
-
+            //Arrange
             string BusinessFlowReportFile = GingerTestHelper.TestResources.GetTestResourcesFile(@"Reports" + Path.DirectorySeparatorChar + "BusinessFlow.txt");
             try
             {
@@ -58,21 +57,19 @@ namespace Ginger.Reports.Tests
         //[Timeout(60000)]
         public void GenrateLastExecutionHTMLReportTest()
         {
-            string BusinessFlowReportFolder = GingerTestHelper.TestResources.GetTestResourcesFolder(@"Reports\AutomationTab_LastExecution\");
+            //Arrange
+            string BusinessFlowReportFolder = GingerTestHelper.TestResources.GetTestResourcesFolder(@"Reports" + Path.DirectorySeparatorChar + "AutomationTab_LastExecution"+ Path.DirectorySeparatorChar);
             ReportInfo RI = new ReportInfo(BusinessFlowReportFolder);
-            //Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(RI);
-
             string templatesFolder = (ExtensionMethods.getGingerEXEFileName() + @"Reports"+ Path.DirectorySeparatorChar  + "GingerExecutionReport" + Path.DirectorySeparatorChar).Replace("Ginger.exe", "");
             HTMLReportConfiguration selectedHTMLReportConfiguration = HTMLReportConfiguration.SetHTMLReportConfigurationWithDefaultValues("DefaultTemplate", true);
-
-            HTMLReportsConfiguration hTMLReportsConfiguration = new HTMLReportsConfiguration();
-
-            string hTMLOutputFolder = @"C:\HTMLReports\";
+            string hTMLOutputFolder = TestResources.GetTempFolder("HTMLReports");
 
 
-            // string report = Ginger.Reports.GingerExecutionReport.ExtensionMethods.NewFunctionCreateGingerExecutionReport(RI,false,selectedHTMLReportConfiguration, templatesFolder:templatesFolder, hTMLReportsConfiguration: hTMLReportsConfiguration,hTMLOutputFolder: hTMLOutputFolder);
+            //Act
+            string report = Ginger.Reports.GingerExecutionReport.ExtensionMethods.NewFunctionCreateGingerExecutionReport(RI, selectedHTMLReportConfiguration, templatesFolder, hTMLOutputFolder );
 
-            string report = Ginger.Reports.GingerExecutionReport.ExtensionMethods.NewFunctionCreateGingerExecutionReport(RI, selectedHTMLReportConfiguration, hTMLOutputFolder, templatesFolder);
+            //Assert
+
         }
 
     }

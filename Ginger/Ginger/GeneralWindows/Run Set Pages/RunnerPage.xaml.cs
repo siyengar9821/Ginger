@@ -276,7 +276,7 @@ namespace Ginger.Run
                 string reportsResultFolder = string.Empty;
                 if (!string.IsNullOrEmpty(reportpath))
                 {
-                    reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(reportpath), false, null, currentConf.HTMLReportsFolder + Ginger.Run.ExecutionLogger.defaultRunTabBFName + Ginger.Reports.GingerExecutionReport.ExtensionMethods.folderNameNormalazing(bf.Name));
+                    reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(reportpath));
                 }                
 
                 if (!_selectedExecutionLoggerConfiguration.ExecutionLoggerConfigurationIsEnabled)

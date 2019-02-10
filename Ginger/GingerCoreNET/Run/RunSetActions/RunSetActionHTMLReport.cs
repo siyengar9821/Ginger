@@ -94,28 +94,16 @@ namespace Ginger.Run.RunSetActions
                         {
                             currentHTMLFolderName = HTMLReportFolderName;
                         }
-                        reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(runSetFolder),
-                                                                                                                                false,
-                                                                                                                                HTMLReportConfigurations.Where(x => (x.ID == selectedHTMLReportTemplateID)).FirstOrDefault(),
-                                                                                                                                currentHTMLFolderName,
-                                                                                                                                isHTMLReportPermanentFolderNameUsed, currentConf.HTMLReportConfigurationMaximalFolderSize);
+                        reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(runSetFolder));
                     }
                     else
                     {
-                        reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(runSetFolder),
-                                                                                                                                false,
-                                                                                                                                HTMLReportConfigurations.Where(x => (x.ID == selectedHTMLReportTemplateID)).FirstOrDefault(),
-                                                                                                                                null,
-                                                                                                                                isHTMLReportPermanentFolderNameUsed);
+                        reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(runSetFolder));
                     }
                 }
                 else
                 {
-                    reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(runSetFolder), 
-                                                                                                                                false,
-                                                                                                                                null,
-                                                                                                                                null,
-                                                                                                                                isHTMLReportPermanentFolderNameUsed);
+                    reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(runSetFolder));
                 }
             }
             else

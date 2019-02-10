@@ -587,16 +587,17 @@ namespace Ginger.Reports
                 ClearDirectoryContent(mPreviewDummyReportPath);            
             else            
                 PrepareDummyReportData();
-            
-            Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(mPreviewDummyReportDataPath),
-                                                                                                        false,
-                                                                                                        _HTMLReportConfiguration,
-                                                                                                        mPreviewDummyReportPath, false,currentConf.HTMLReportConfigurationMaximalFolderSize);
 
+
+            ReportInfo RI = new ReportInfo(mPreviewDummyReportDataPath);
+
+            string reportsPath = Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(RI);
+            // Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(mPreviewDummyReportDataPath));
             WBP = new WebBrowserPage();
             frmBrowser.Content = WBP;
             browser = WBP.GetBrowser();
-            browser.Navigate(System.IO.Path.Combine(mPreviewDummyReportPath, "GingerExecutionReport.html"));
+            string fullPath = Path.Combine(reportsPath, "GingerExecutionReport.html");
+            browser.Navigate(fullPath);
 
             Mouse.OverrideCursor = _previousCursor;
         }

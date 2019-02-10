@@ -1445,8 +1445,16 @@ namespace Ginger.Run
                 }
                 if (WorkSpace.RunsetExecutor.RunSetConfig.RunsetExecLoggerPopulated)
                 {
+                    var HTMLReportConfigurations = WorkSpace.Instance.SolutionRepository.GetAllRepositoryItems<HTMLReportConfiguration>();
+                    HTMLReportConfiguration selectedHTMLReportConfiguration = HTMLReportConfigurations.Where(x => (x.IsDefault == true)).FirstOrDefault();
+
                     string runSetFolder = App.RunsetExecutor.RunSetConfig.LastRunsetLoggerFolder;
-                    reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(runSetFolder), false, null, null);
+                    ReportInfo RI = new ReportInfo(runSetFolder);
+                    string hTMLOutputFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.GetReportDirectory(currentConf.HTMLReportsFolder + Path.DirectorySeparatorChar + System.IO.Path.GetFileName(((RunSetReport)RI.ReportInfoRootObject).LogFolder));
+       
+                    string templatesFolder = (Ginger.Reports.GingerExecutionReport.ExtensionMethods.getGingerEXEFileName() + @"Reports" + Path.DirectorySeparatorChar + "GingerExecutionReport" + Path.DirectorySeparatorChar).Replace("Ginger.exe", "");
+                    
+                    reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.NewFunctionCreateGingerExecutionReport(RI, selectedHTMLReportConfiguration, templatesFolder, hTMLOutputFolder);
                 }
                 else
                 {

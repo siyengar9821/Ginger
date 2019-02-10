@@ -2631,109 +2631,128 @@ namespace Ginger.Reports.GingerExecutionReport
     {
         public static string defaultAutomationTabReportName = "{name_to_replace}_{date_to_replace}_AutomationTab_{objectType_to_replace}";
 
-        public static string CreateGingerExecutionReport(ReportInfo RI, bool calledFromAutomateTab = false, HTMLReportConfiguration SelectedHTMLReportConfiguration = null, string mHTMLReportsFolder = null, bool isHTMLReportPermanentFolderNameUsed = false, long maxFolderSize = 0)
+        //public static string CreateGingerExecutionReport(ReportInfo RI, bool calledFromAutomateTab = false, HTMLReportConfiguration SelectedHTMLReportConfiguration = null, string mHTMLReportsFolder = null, bool isHTMLReportPermanentFolderNameUsed = false, long maxFolderSize = 0)
+        //{
+        //    GingerExecutionReport gingerExecutionReport = new GingerExecutionReport();
+
+        //    gingerExecutionReport.TemplatesFolder = (ExtensionMethods.getGingerEXEFileName() + @"Reports\GingerExecutionReport\").Replace("Ginger.exe", "");
+
+        //    if (SelectedHTMLReportConfiguration != null)
+        //    {
+        //        gingerExecutionReport.currentTemplate = SelectedHTMLReportConfiguration;
+        //    }
+        //    else
+        //    {
+        //        var HTMLReportConfigurations = WorkSpace.Instance.SolutionRepository.GetAllRepositoryItems<HTMLReportConfiguration>();
+        //        HTMLReportConfiguration defualtConfig = HTMLReportConfigurations.Where(x => (x.IsDefault == true)).FirstOrDefault();
+        //        // TODO - need to delete, template always should be initialize with fields.
+        //        if (defualtConfig != null)
+        //        {
+        //            gingerExecutionReport.currentTemplate = HTMLReportConfiguration.EnchancingLoadedFieldsWithDataAndValidating(defualtConfig);
+        //        }
+        //        else
+        //        {
+        //            Reporter.ToUser(eUserMsgKey.StaticErrorMessage, "Missing report template configuration");
+        //            return null;
+        //        }
+        //    }
+
+        //    if ((RI.ReportInfoRootObject == null) || (RI.ReportInfoRootObject.GetType() == typeof(Object)))
+        //    {
+        //        return string.Empty;
+        //    }
+
+        //    HTMLReportsConfiguration currentConf = WorkSpace.Instance.Solution.HTMLReportsConfigurationSetList.Where(x => (x.IsSelected == true)).FirstOrDefault();
+        //    if (!calledFromAutomateTab)
+        //    {
+        //        if ((mHTMLReportsFolder != null) && (mHTMLReportsFolder != string.Empty))
+        //        {
+        //            if (isHTMLReportPermanentFolderNameUsed)
+        //            {
+        //                mHTMLReportsFolder = ExtensionMethods.GetReportDirectory(mHTMLReportsFolder + System.IO.Path.GetFileName(((RunSetReport)RI.ReportInfoRootObject).Name));
+        //            }
+        //            gingerExecutionReport.HTMLReportMainFolder = ExtensionMethods.GetReportDirectory(mHTMLReportsFolder);
+        //        }
+        //        else
+        //        {
+        //            if (!isHTMLReportPermanentFolderNameUsed)
+        //            {
+        //                gingerExecutionReport.HTMLReportMainFolder = ExtensionMethods.GetReportDirectory(currentConf.HTMLReportsFolder + "\\" + System.IO.Path.GetFileName(((RunSetReport)RI.ReportInfoRootObject).LogFolder));
+        //            }
+        //            else
+        //            {
+        //                gingerExecutionReport.HTMLReportMainFolder = ExtensionMethods.GetReportDirectory(currentConf.HTMLReportsFolder + "\\" + System.IO.Path.GetFileName(((RunSetReport)RI.ReportInfoRootObject).Name));
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        gingerExecutionReport.HTMLReportMainFolder = currentConf.HTMLReportsFolder + "\\" + defaultAutomationTabReportName;
+        //    }
+
+        //    if (Directory.Exists(gingerExecutionReport.HTMLReportMainFolder))
+        //    {
+        //        CleanDirectory(gingerExecutionReport.HTMLReportMainFolder);
+        //    }
+        //    string Folder = WorkSpace.Instance.Solution.Folder.ToString() + "\\HTMLReports\\";
+
+        //    if (currentConf.LimitReportFolderSize)
+        //    {
+        //        DeleteFolderContentBySizeLimit DeleteFolderContentBySizeLimit = new DeleteFolderContentBySizeLimit(Folder, maxFolderSize);
+        //    }
+
+        //    switch (RI.reportInfoLevel)
+        //    {
+        //        case ReportInfo.ReportInfoLevel.RunSetLevel:
+        //            gingerExecutionReport.CreateSummaryViewReport(RI);
+        //            break;
+        //        case ReportInfo.ReportInfoLevel.GingerLevel:
+        //            gingerExecutionReport.CreateGingerLevelReport((GingerReport)((ReportInfo)RI).ReportInfoRootObject, "", true);
+        //            break;
+        //        case ReportInfo.ReportInfoLevel.BussinesFlowLevel:
+        //            gingerExecutionReport.CreateBusinessFlowLevelReport((BusinessFlowReport)((ReportInfo)RI).ReportInfoRootObject, "", "", true);
+        //            break;
+        //        case ReportInfo.ReportInfoLevel.ActivityLevel:
+        //            gingerExecutionReport.CreateActivityLevelReport((ActivityReport)((ReportInfo)RI).ReportInfoRootObject, "", "", true);
+        //            break;
+        //        case ReportInfo.ReportInfoLevel.ActionLevel:
+        //            gingerExecutionReport.CreateActionLevelReport((ActionReport)((ReportInfo)RI).ReportInfoRootObject, "", "", true);
+        //            break;
+        //        default:
+        //            return string.Empty;
+        //    }
+        //    return gingerExecutionReport.HTMLReportMainFolder;
+        //}
+
+
+        public static string CreateGingerExecutionReport(ReportInfo RI)
         {
-            GingerExecutionReport gingerExecutionReport = new GingerExecutionReport();
-
-            gingerExecutionReport.TemplatesFolder = (ExtensionMethods.getGingerEXEFileName() + @"Reports\GingerExecutionReport\").Replace("Ginger.exe", "");
-
-            if (SelectedHTMLReportConfiguration != null)
-            {
-                gingerExecutionReport.currentTemplate = SelectedHTMLReportConfiguration;
-            }
-            else
-            {
-                var HTMLReportConfigurations = WorkSpace.Instance.SolutionRepository.GetAllRepositoryItems<HTMLReportConfiguration>();
-                HTMLReportConfiguration defualtConfig = HTMLReportConfigurations.Where(x => (x.IsDefault == true)).FirstOrDefault();
-                // TODO - need to delete, template always should be initialize with fields.
-                if (defualtConfig != null)
-                {
-                    gingerExecutionReport.currentTemplate = HTMLReportConfiguration.EnchancingLoadedFieldsWithDataAndValidating(defualtConfig);
-                }
-                else
-                {
-                    Reporter.ToUser(eUserMsgKey.StaticErrorMessage, "Missing report template configuration");
-                    return null;
-                }
-            }
-
-            if ((RI.ReportInfoRootObject == null) || (RI.ReportInfoRootObject.GetType() == typeof(Object)))
-            {
-                return string.Empty;
-            }
-
+            var HTMLReportConfigurations = WorkSpace.Instance.SolutionRepository.GetAllRepositoryItems<HTMLReportConfiguration>();
+            HTMLReportConfiguration selectedHTMLReportConfiguration = HTMLReportConfigurations.Where(x => (x.IsDefault == true)).FirstOrDefault();
             HTMLReportsConfiguration currentConf = WorkSpace.Instance.Solution.HTMLReportsConfigurationSetList.Where(x => (x.IsSelected == true)).FirstOrDefault();
-            if (!calledFromAutomateTab)
+            string fileName = string.Empty;
+            if (RI.ReportInfoRootObject is BusinessFlowReport)
             {
-                if ((mHTMLReportsFolder != null) && (mHTMLReportsFolder != string.Empty))
-                {
-                    if (isHTMLReportPermanentFolderNameUsed)
-                    {
-                        mHTMLReportsFolder = ExtensionMethods.GetReportDirectory(mHTMLReportsFolder + System.IO.Path.GetFileName(((RunSetReport)RI.ReportInfoRootObject).Name));
-                    }
-                    gingerExecutionReport.HTMLReportMainFolder = ExtensionMethods.GetReportDirectory(mHTMLReportsFolder);
-                }
-                else
-                {
-                    if (!isHTMLReportPermanentFolderNameUsed)
-                    {
-                        gingerExecutionReport.HTMLReportMainFolder = ExtensionMethods.GetReportDirectory(currentConf.HTMLReportsFolder + "\\" + System.IO.Path.GetFileName(((RunSetReport)RI.ReportInfoRootObject).LogFolder));
-                    }
-                    else
-                    {
-                        gingerExecutionReport.HTMLReportMainFolder = ExtensionMethods.GetReportDirectory(currentConf.HTMLReportsFolder + "\\" + System.IO.Path.GetFileName(((RunSetReport)RI.ReportInfoRootObject).Name));
-                    }
-                }
+                fileName = System.IO.Path.GetFileName(((BusinessFlowReport)RI.ReportInfoRootObject).LogFolder);
             }
-            else
+            else if (RI.ReportInfoRootObject is RunSetReport)
             {
-                gingerExecutionReport.HTMLReportMainFolder = currentConf.HTMLReportsFolder + "\\" + defaultAutomationTabReportName;
+                fileName = System.IO.Path.GetFileName(((RunSetReport)RI.ReportInfoRootObject).LogFolder);
             }
 
-            if (Directory.Exists(gingerExecutionReport.HTMLReportMainFolder))
-            {
-                CleanDirectory(gingerExecutionReport.HTMLReportMainFolder);
-            }
-            string Folder = WorkSpace.Instance.Solution.Folder.ToString() + "\\HTMLReports\\";
+            string hTMLOutputFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.GetReportDirectory(currentConf.HTMLReportsFolder + fileName);
+            string templatesFolder = (Ginger.Reports.GingerExecutionReport.ExtensionMethods.getGingerEXEFileName() + @"Reports" + Path.DirectorySeparatorChar + "GingerExecutionReport" + Path.DirectorySeparatorChar).Replace("Ginger.exe", "");
+            string reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.NewFunctionCreateGingerExecutionReport(RI, selectedHTMLReportConfiguration, templatesFolder, hTMLOutputFolder);
 
-            if (currentConf.LimitReportFolderSize)
-            {
-                DeleteFolderContentBySizeLimit DeleteFolderContentBySizeLimit = new DeleteFolderContentBySizeLimit(Folder, maxFolderSize);
-            }
 
-            switch (RI.reportInfoLevel)
-            {
-                case ReportInfo.ReportInfoLevel.RunSetLevel:
-                    gingerExecutionReport.CreateSummaryViewReport(RI);
-                    break;
-                case ReportInfo.ReportInfoLevel.GingerLevel:
-                    gingerExecutionReport.CreateGingerLevelReport((GingerReport)((ReportInfo)RI).ReportInfoRootObject, "", true);
-                    break;
-                case ReportInfo.ReportInfoLevel.BussinesFlowLevel:
-                    gingerExecutionReport.CreateBusinessFlowLevelReport((BusinessFlowReport)((ReportInfo)RI).ReportInfoRootObject, "", "", true);
-                    break;
-                case ReportInfo.ReportInfoLevel.ActivityLevel:
-                    gingerExecutionReport.CreateActivityLevelReport((ActivityReport)((ReportInfo)RI).ReportInfoRootObject, "", "", true);
-                    break;
-                case ReportInfo.ReportInfoLevel.ActionLevel:
-                    gingerExecutionReport.CreateActionLevelReport((ActionReport)((ReportInfo)RI).ReportInfoRootObject, "", "", true);
-                    break;
-                default:
-                    return string.Empty;
-            }
-            return gingerExecutionReport.HTMLReportMainFolder;
+            return reportsResultFolder;
         }
 
-        public static string NewFunctionCreateGingerExecutionReport(ReportInfo RI,  HTMLReportConfiguration HTMLReportConfiguration , string hTMLOutputFolder, string templatesFolder)
+        public static string NewFunctionCreateGingerExecutionReport(ReportInfo RI,  HTMLReportConfiguration HTMLReportConfiguration, string templatesFolder, string hTMLOutputFolder)
         {
             GingerExecutionReport gingerExecutionReport = new GingerExecutionReport();
             gingerExecutionReport.TemplatesFolder = templatesFolder;
             gingerExecutionReport.currentTemplate = HTMLReportConfiguration;
-
-            if ((RI.ReportInfoRootObject == null) || (RI.ReportInfoRootObject.GetType() == typeof(Object)))
-            {
-                return string.Empty;
-            }
 
             gingerExecutionReport.HTMLReportMainFolder = hTMLOutputFolder;
            

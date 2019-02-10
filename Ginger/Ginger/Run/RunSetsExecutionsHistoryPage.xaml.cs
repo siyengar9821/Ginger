@@ -252,16 +252,8 @@ namespace Ginger.Run
 
         private void ReportBtnClicked(object sender, RoutedEventArgs e)
         {
-            HTMLReportsConfiguration currentConf =  WorkSpace.UserProfile.Solution.HTMLReportsConfigurationSetList.Where(x => (x.IsSelected == true)).FirstOrDefault();
-            if (grdExecutionsHistory.CurrentItem == null)
-            {
-                Reporter.ToUser(eUserMsgKey.NoItemWasSelected);
-                return;
-            }
-
-            string runSetFolder = ExecutionLogger.GetLoggerDirectory(((RunSetReport)grdExecutionsHistory.CurrentItem).LogFolder);
-
-            string reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(runSetFolder), false, null, null, false, currentConf.HTMLReportConfigurationMaximalFolderSize);
+            string runSetFolder = App.RunsetExecutor.RunSetConfig.LastRunsetLoggerFolder;
+            string reportsResultFolder = Ginger.Reports.GingerExecutionReport.ExtensionMethods.CreateGingerExecutionReport(new ReportInfo(runSetFolder));
 
             if (reportsResultFolder == string.Empty)
             {

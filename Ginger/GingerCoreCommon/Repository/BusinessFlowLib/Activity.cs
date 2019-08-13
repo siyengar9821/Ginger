@@ -324,17 +324,31 @@ namespace GingerCore
         //}
 
 
-        private string mTargetApplication;
-        [IsSerializedForLocalRepository]        
-        public string TargetApplication          
+        //private string mTargetApplication;
+        //[IsSerializedForLocalRepository]        
+        //public string TargetApplication          
+        //{
+        //    get { return mTargetApplication; }
+        //    set
+        //    {
+        //        if (!string.IsNullOrEmpty(value) && mTargetApplication != value)
+        //        {
+        //            mTargetApplication = value;
+        //            OnPropertyChanged(nameof(TargetApplication));
+        //        }
+        //    }
+        //}
+        private RepositoryItemKey mTargetApplicationKey;
+        [IsSerializedForLocalRepository]
+        public RepositoryItemKey TargetApplicationKey
         {
-            get { return mTargetApplication; }
+            get { return mTargetApplicationKey; }
             set
             {
-                if (!string.IsNullOrEmpty(value) && mTargetApplication != value)
+                if (mTargetApplicationKey != value)
                 {
-                    mTargetApplication = value;
-                    OnPropertyChanged(nameof(TargetApplication));
+                    mTargetApplicationKey = value;
+                    OnPropertyChanged(nameof(TargetApplicationKey));
                 }
             }
         }
@@ -673,8 +687,7 @@ namespace GingerCore
                     newInstance.ParentGuid = activityInstance.ParentGuid;
                     newInstance.ExternalID = activityInstance.ExternalID;
                     newInstance.ActivitiesGroupID = activityInstance.ActivitiesGroupID;
-                    //newInstance.ActivitiesGroupColor = activityInstance.ActivitiesGroupColor;
-                    newInstance.TargetApplication = activityInstance.TargetApplication;
+                    newInstance.TargetApplicationKey = activityInstance.TargetApplicationKey;
                     newInstance.Active = activityInstance.Active;
                     newInstance.VariablesDependencies = activityInstance.VariablesDependencies;                   
                     if (ePartToUpdate == eItemParts.Details)

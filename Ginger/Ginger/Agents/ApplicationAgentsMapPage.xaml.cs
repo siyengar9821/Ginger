@@ -19,6 +19,7 @@ limitations under the License.
 using amdocs.ginger.GingerCoreNET;
 using Amdocs.Ginger.Common;
 using Amdocs.Ginger.Common.InterfacesLib;
+using Amdocs.Ginger.Common.Repository;
 using Amdocs.Ginger.UserControls;
 using Ginger.Run;
 using GingerCore;
@@ -142,10 +143,10 @@ namespace Ginger.Agents
             ApplicationAgent ag = ApplicationAgents.Where(x => x.Agent == (Agent)((ComboBox)sender).SelectedValue).FirstOrDefault();
             if (ag != null)
             {
-                ApplicationPlatform ap = WorkSpace.Instance.Solution.ApplicationPlatforms.Where(x => x.AppName == ag.AppName).FirstOrDefault();
-                if (ap != null)
+                TargetBase target = WorkSpace.Instance.Solution.TargetApplications.Where(x => x.Guid == ag.AppName).FirstOrDefault();
+                if (target != null)
                 {
-                    ap.LastMappedAgentName = ag.AgentName;
+                    target.LastMappedAgentName = ag.AgentName;
                 }
             }
         }

@@ -18,6 +18,7 @@ limitations under the License.
 
 using amdocs.ginger.GingerCoreNET;
 using Amdocs.Ginger.Common;
+using Amdocs.Ginger.Common.Repository;
 using Ginger.UserControls;
 using GingerCore;
 using GingerCore.Platforms;
@@ -35,7 +36,7 @@ namespace Ginger.BusinessFlowWindows
     public partial class EditBusinessFlowAppsPage : Page
     {
          BusinessFlow mBusinessFlow;
-         ObservableList<ApplicationPlatform> mApplicationsPlatforms = new ObservableList<ApplicationPlatform>();
+         ObservableList<TargetBase> mApplications = new ObservableList<TargetBase>();
          GenericWindow _pageGenericWin = null;
          private bool IsNewBusinessflow = false;
         public EditBusinessFlowAppsPage(BusinessFlow BizFlow, bool IsNewBF = false)
@@ -55,31 +56,29 @@ namespace Ginger.BusinessFlowWindows
              GridViewDef view = new GridViewDef(GridViewDef.DefaultViewName);
              view.GridColsView = new ObservableList<GridColView>();
 
-             view.GridColsView.Add(new GridColView() { Field = "Selected", WidthWeight = 20, StyleType = GridColView.eGridColStyleType.CheckBox });
-             view.GridColsView.Add(new GridColView() { Field = "AppName", Header = "Application Name", WidthWeight = 50, ReadOnly=true, BindingMode=BindingMode.OneWay});
-             view.GridColsView.Add(new GridColView() { Field = "Platform", Header = "Platform", WidthWeight = 30, ReadOnly = true, BindingMode = BindingMode.OneWay });
+             view.GridColsView.Add(new GridColView() { Field = nameof(TargetBase.Selected), WidthWeight = 20, StyleType = GridColView.eGridColStyleType.CheckBox });
+             view.GridColsView.Add(new GridColView() { Field = nameof(TargetBase.Name), Header = "Application Name", WidthWeight = 50, ReadOnly=true, BindingMode=BindingMode.OneWay});
+             view.GridColsView.Add(new GridColView() { Field = nameof(TargetBase.Platform), Header = "Platform", WidthWeight = 30, ReadOnly = true, BindingMode = BindingMode.OneWay });
 
              AppsGrid.SetAllColumnsDefaultView(view);
              AppsGrid.InitViewItems();
 
-             foreach (ApplicationPlatform AP in  WorkSpace.Instance.Solution.ApplicationPlatforms)
+             foreach (TargetBase AP in  WorkSpace.Instance.Solution.TargetApplications)
              {
-                 ApplicationPlatform AP1 = new ApplicationPlatform();
-                 AP1.AppName = AP.AppName;
+                TargetApplication AP1 = new TargetApplication();
+                 AP1.AppName = AP.Name;
                  AP1.Platform = AP.Platform;
 
                  // If this App was selected before then mark it 
-                 TargetApplication APS = (TargetApplication)(from x in mBusinessFlow.TargetApplications where x.Name == AP.AppName select x).FirstOrDefault();
-
-                 if (APS != null)
+                 if ((from x in mBusinessFlow.TargetApplicationsKeys where x.Guid == AP.Guid select x).FirstOrDefault() != null)
                  {
                      AP1.Selected = true;
                  }
 
-                 mApplicationsPlatforms.Add(AP1);
+                 mApplications.Add(AP1);
              }
 
-             AppsGrid.DataSourceList = mApplicationsPlatforms;
+             AppsGrid.DataSourceList = mApplications;
          }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
@@ -87,23 +86,23 @@ namespace Ginger.BusinessFlowWindows
             if (IsNewBusinessflow == true)
             {
                 SetTargetApplications();
-                if (mBusinessFlow.TargetApplications?.Count != 0)
+                if (mBusinessFlow.TargetApplicationsKeys?.Count != 0)
                 {
-                    mBusinessFlow.CurrentActivity.TargetApplication = mBusinessFlow.TargetApplications[0].Name;
+                    mBusinessFlow.CurrentActivity.TargetApplicationKey = mBusinessFlow.TargetApplicationsKeys[0];
                 }
             }
             else
             {               
                 SetTargetApplications();
-                if (mBusinessFlow.TargetApplications.Count == 1)
+                if (mBusinessFlow.TargetApplicationsKeys.Count == 1)
                 {
                     foreach (Activity activity in mBusinessFlow.Activities)
                     {
-                        activity.TargetApplication = mBusinessFlow.TargetApplications[0].Name;
+                        activity.TargetApplicationKey = mBusinessFlow.TargetApplicationsKeys[0];
                     }
                 }
             }
-            if (mBusinessFlow.TargetApplications.Count > 0|| mApplicationsPlatforms.Count==0)
+            if (mBusinessFlow.TargetApplicationsKeys.Count > 0 || mApplications.Count==0)
             {
                 _pageGenericWin.Close();
             }
@@ -126,7 +125,7 @@ namespace Ginger.BusinessFlowWindows
 
         internal void ResetPlatformSelection()
         {
-            foreach (var item in mApplicationsPlatforms)
+            foreach (var item in mApplications)
             {
                 item.Selected=false;
             }
@@ -136,24 +135,26 @@ namespace Ginger.BusinessFlowWindows
         {
             //mBusinessFlow.TargetApplications.Clear();
             //remove deleted
-            for(int indx=0;indx< mBusinessFlow.TargetApplications.Count;indx++)
+            for(int indx=0;indx< mBusinessFlow.TargetApplicationsKeys.Count;indx++)
             {
-                if (mApplicationsPlatforms.Where(x=>x.Selected && x.AppName == mBusinessFlow.TargetApplications[indx].Name).FirstOrDefault() == null)
+                TargetBase taregtApp = mApplications.Where(x => x.Selected && x.Guid == mBusinessFlow.TargetApplicationsKeys[indx].Guid).FirstOrDefault();
+                if (taregtApp == null)
                 {
-                    mBusinessFlow.TargetApplications.RemoveAt(indx);
+                    mBusinessFlow.TargetApplicationsKeys.RemoveAt(indx);
                     indx--;
+                }
+                else
+                {
+                    mBusinessFlow.TargetApplicationsKeys[0].ItemName = taregtApp.Name;//making sure name is in sync
                 }
             }
 
             //add new
-            foreach (ApplicationPlatform TA in mApplicationsPlatforms.Where(x=>x.Selected).ToList())
+            foreach (TargetBase TA in mApplications.Where(x=>x.Selected).ToList())
             {                
-                if (mBusinessFlow.TargetApplications.Where(x=>x.Name == TA.AppName).FirstOrDefault() == null)
+                if (mBusinessFlow.TargetApplicationsKeys.Where(x=>x.Guid == TA.Guid).FirstOrDefault() == null)
                 {
-                    TargetApplication tt = new TargetApplication();
-                    tt.AppName = TA.AppName;
-                    tt.Selected = true;
-                    mBusinessFlow.TargetApplications.Add(tt);
+                    mBusinessFlow.TargetApplicationsKeys.Add(TA.Key);
                 }
             }
         }

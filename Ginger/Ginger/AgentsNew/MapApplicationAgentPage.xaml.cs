@@ -41,8 +41,8 @@ namespace GingerWPF.AgentsLib
     /// </summary>
     public partial class MapApplicationAgentPage : Page
     {
-        ObservableList<IApplicationAgent> mApps;
-        public MapApplicationAgentPage(ObservableList<IApplicationAgent> Apps)
+        ObservableList<ApplicationAgent> mApps;
+        public MapApplicationAgentPage(ObservableList<ApplicationAgent> Apps)
         {
             InitializeComponent();
 
@@ -74,7 +74,7 @@ namespace GingerWPF.AgentsLib
         private void AddAgentButton_Click(object sender, RoutedEventArgs e)
         {
             // Temp dummy 
-            mApps.Add(new ApplicationAgent() { AppName = "koko" });
+            mApps.Add(new ApplicationAgent() { AppKey = new RepositoryItemKey() { ItemName = "koko" } });
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)

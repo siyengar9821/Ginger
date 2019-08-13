@@ -27,7 +27,6 @@ namespace Amdocs.Ginger.Repository
         public Guid Guid { get; set; }
         public string ItemName { get; set; }
                 
-
         public string Key
         {
             get

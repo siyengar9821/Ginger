@@ -47,7 +47,7 @@ namespace GingerCore
             Name = sName;
             Activities = new ObservableList<Activity>();
             Variables = new ObservableList<VariableBase>();
-            TargetApplications = new ObservableList<TargetBase>();
+            //TargetApplications = new ObservableList<TargetBase>();
 
             Activity a = new Activity() { Active = true };
             a.ActivityName = GingerDicser.GetTermResValue(eTermResKey.Activity) + " 1";
@@ -285,8 +285,11 @@ namespace GingerCore
         //TODO:  Delete not used anymore , but keep so old BF can load till conv part is done
         // public ObservableList<Platform> Platforms;
 
+        //[IsSerializedForLocalRepository]
+        //public ObservableList<TargetBase> TargetApplications = new ObservableList<TargetBase>();
+
         [IsSerializedForLocalRepository]
-        public ObservableList<TargetBase> TargetApplications = new ObservableList<TargetBase>();
+        public ObservableList<RepositoryItemKey> TargetApplicationsKeys = new ObservableList<RepositoryItemKey>();
 
         private Activity mCurrentActivity { get; set; }
 
@@ -965,13 +968,13 @@ namespace GingerCore
         }
 
 
-        public string MainApplication
+        public RepositoryItemKey MainApplicationKey
         {
             get
             {
-                if (TargetApplications != null && TargetApplications.Count() > 0)
+                if (TargetApplicationsKeys != null && TargetApplicationsKeys.Count() > 0)
                 {
-                    return TargetApplications[0].Name;
+                    return TargetApplicationsKeys[0];
                 }
                 else
                 {
@@ -1101,9 +1104,9 @@ namespace GingerCore
 
         public void SetActivityTargetApplication(Activity activity)
         {
-            if (this.TargetApplications.Where(x => x.Name == activity.TargetApplication).FirstOrDefault() == null)
+            if (TargetApplicationsKeys.Where(x => x.Guid == activity.TargetApplicationKey.Guid).FirstOrDefault() == null)
             {
-                activity.TargetApplication = this.MainApplication;
+                activity.TargetApplicationKey = MainApplicationKey;
             }
         }
 
@@ -1276,10 +1279,10 @@ namespace GingerCore
             get
             {
                 string s = "";
-                foreach (TargetApplication TA in TargetApplications)
+                foreach (RepositoryItemKey TA in TargetApplicationsKeys)
                 {
                     if (s.Length > 0) s += ", ";
-                    s += TA.AppName;
+                    s += TA.ItemName;
                 }
                 return s;
             }

@@ -18,6 +18,7 @@ limitations under the License.
 
 using amdocs.ginger.GingerCoreNET;
 using Amdocs.Ginger.Common;
+using Amdocs.Ginger.Common.Repository;
 using GingerCore.Environments;
 using GingerCore.Platforms;
 using GingerCoreNET.SolutionRepositoryLib.RepositoryObjectsLib.PlatformsLib;
@@ -47,9 +48,9 @@ namespace Ginger.Environments.AddEnvironmentWizardLib
                 case EventType.Init:
                     mWizard = (AddEnvironmentWizard)WizardEventArgs.Wizard;
 
-                    foreach (ApplicationPlatform appPlat in  WorkSpace.Instance.Solution.ApplicationPlatforms)
+                    foreach (TargetBase appPlat in  WorkSpace.Instance.Solution.TargetApplications)
                     {
-                        EnvApplication envApp = new EnvApplication() { Name = appPlat.AppName };
+                        EnvApplication envApp = new EnvApplication() { Name = appPlat.Name };
                         envApp.Active = true;
                         mWizard.apps.Add(envApp);
                     }

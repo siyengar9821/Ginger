@@ -146,13 +146,13 @@ namespace Ginger.SolutionGeneral
                 }
                 if (solutionItemToSave != eSolutionItemToSave.TargetApplications)
                 {
-                    if (ApplicationPlatforms.Count != lastSavedSolution.ApplicationPlatforms.Count)
+                    if (TargetApplications.Count != lastSavedSolution.TargetApplications.Count)
                     {
                         bldExtraChangedItems.Append("Target Applications, ");
                     }
                     else
                     {
-                        foreach (ApplicationPlatform app in ApplicationPlatforms)
+                        foreach (TargetBase app in TargetApplications)
                         {
                             if (app.DirtyStatus == Amdocs.Ginger.Common.Enums.eDirtyStatus.Modified || app.DirtyStatus == Amdocs.Ginger.Common.Enums.eDirtyStatus.NoTracked)
                             {
@@ -238,11 +238,13 @@ namespace Ginger.SolutionGeneral
                 mAccount = value;                
             } }
 
-        public ePlatformType MainPlatform {
-            get {
-                if (ApplicationPlatforms != null && ApplicationPlatforms.Count() > 0)
+        public ePlatformType MainPlatform
+        {
+            get
+            {
+                if (TargetApplications != null && TargetApplications.Count() > 0)
                 {
-                    return ApplicationPlatforms[0].Platform;
+                    return TargetApplications[0].Platform;
                 }
                 else
                 {
@@ -319,20 +321,19 @@ namespace Ginger.SolutionGeneral
             }
         }
 
+        //[IsSerializedForLocalRepository]
+        //public ObservableList<ApplicationPlatform> ApplicationPlatforms { get; set; }
         [IsSerializedForLocalRepository]
-        public ObservableList<ApplicationPlatform> ApplicationPlatforms { get; set; }
+        public ObservableList<TargetBase> TargetApplications = new ObservableList<TargetBase>();
 
-        public string MainApplication
+        public TargetBase MainApplication
         {
             //TODO: check usage
             get
             {
-                if (ApplicationPlatforms == null)
-                    ApplicationPlatforms = new ObservableList<ApplicationPlatform>();
-
-                if (ApplicationPlatforms.Count > 0)
+                if (TargetApplications.Count > 0)
                 {
-                    return ApplicationPlatforms[0].AppName;
+                    return TargetApplications[0];
                 }
                 else
                 {
@@ -341,15 +342,15 @@ namespace Ginger.SolutionGeneral
             }
         }       
 
-        public ObservableList<TargetBase> GetSolutionTargetApplications()
-        {
-            ObservableList<TargetBase> solTargetApplications = new ObservableList<TargetBase>();
-            foreach (ApplicationPlatform app in ApplicationPlatforms)
-            {
-                solTargetApplications.Add(new TargetApplication() { AppName = app.AppName, Guid = app.Guid });
-            }
-            return solTargetApplications;
-        }
+        //public ObservableList<TargetBase> GetSolutionTargetApplications()
+        //{
+        //    ObservableList<TargetBase> solTargetApplications = new ObservableList<TargetBase>();
+        //    foreach (ApplicationPlatform app in ApplicationPlatforms)
+        //    {
+        //        solTargetApplications.Add(new TargetApplication() { AppName = app.AppName, Guid = app.Guid });
+        //    }
+        //    return solTargetApplications;
+        //}
 
         // MRUManager mRecentUsedBusinessFlows;
 
@@ -382,17 +383,17 @@ namespace Ginger.SolutionGeneral
             }
         }
 
-        public void SetUniqueApplicationName(ApplicationPlatform app)
+        public void SetUniqueApplicationName(TargetApplication app)
         {
-            if (this.ApplicationPlatforms.Where(obj => obj.AppName == app.AppName).FirstOrDefault() == null) return; //no name like it in the group
+            if (TargetApplications.Where(obj => obj.Name == app.AppName).FirstOrDefault() == null) return; //no name like it in the group
 
-            List<ApplicationPlatform> sameNameObjList =
-                this.ApplicationPlatforms.Where(obj => obj.AppName == app.AppName).ToList<ApplicationPlatform>();
+            List<TargetBase> sameNameObjList =
+                TargetApplications.Where(obj => obj.Name == app.AppName).ToList<TargetBase>();
             if (sameNameObjList.Count == 1 && sameNameObjList[0] == app) return; //Same internal object
 
             //Set unique name
             int counter = 2;
-            while ((this.ApplicationPlatforms.Where(obj => obj.AppName == app.AppName + counter).FirstOrDefault()) != null)
+            while ((TargetApplications.Where(obj => obj.Name == app.AppName + counter).FirstOrDefault()) != null)
                 counter++;
             app.AppName += counter.ToString();
         }
@@ -569,12 +570,17 @@ namespace Ginger.SolutionGeneral
             if (TargetApplicationKey != null)
             {
                 string targetapp = TargetApplicationKey.ItemName;
-                ePlatformType platform = (from x in ApplicationPlatforms where x.AppName == targetapp select x.Platform).FirstOrDefault();
+                ePlatformType platform = (from x in TargetApplications where x.Guid == TargetApplicationKey.Guid select x.Platform).FirstOrDefault();
                 return platform;
             }
             return ePlatformType.Web;
         }
 
+        public override bool SerializationError(SerializationErrorType errorType, string name, string value)
+        {
+            //TODO: a.	Convert public ObservableList<ApplicationPlatform> ApplicationPlatforms into public ObservableList< TargetBase> TargetApplications
+            return base.SerializationError(errorType, name, value);
+        }
     }
 
 

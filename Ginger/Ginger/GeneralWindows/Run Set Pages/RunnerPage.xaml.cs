@@ -677,11 +677,13 @@ namespace Ginger.Run
             TextBlockHelper TBH = new TextBlockHelper(xRunnerInfoTextBlock);
             foreach (ApplicationAgent appAgent in mRunner.ApplicationAgents)
             {
-                if ( WorkSpace.Instance.Solution.ApplicationPlatforms.Where(x => x.AppName == appAgent.AppName && x.Platform == ePlatformType.NA).FirstOrDefault() != null)
+                if (WorkSpace.Instance.Solution.TargetApplications.Where(x => x.Guid == appAgent.AppKey.Guid && x.Platform == ePlatformType.NA).FirstOrDefault() != null)
+                {
                     continue;
-                TBH.AddText(LimitstringLength(appAgent.AppName, 10));
+                }
+                TBH.AddText(LimitstringLength(appAgent.AppKey.ItemName, 10));
                 TBH.AddText(" > ");
-                TBH.AddText(LimitstringLength(appAgent.AgentName, 10));
+                TBH.AddText(LimitstringLength(appAgent.AgentKey.ItemName, 10));
                 TBH.AddLineBreak();
             }
             //set info icons

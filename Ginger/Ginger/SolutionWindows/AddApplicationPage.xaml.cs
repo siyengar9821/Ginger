@@ -25,6 +25,7 @@ using Ginger.UserControls;
 using GingerCore.Platforms;
 using GingerCoreNET.SolutionRepositoryLib.RepositoryObjectsLib.PlatformsLib;
 using Ginger.SolutionGeneral;
+using Amdocs.Ginger.Common.Repository;
 
 namespace Ginger.SolutionWindows
 {
@@ -50,18 +51,18 @@ namespace Ginger.SolutionWindows
             // Later on get this list from our public web site
 
             // meanwhile grid will do
-            ObservableList<ApplicationPlatform> APs = new ObservableList<ApplicationPlatform>();
-            APs.Add(new ApplicationPlatform() { AppName = "CRM", Platform = ePlatformType.Java, Description = "Amdocs Client Relationship Manager" });
-            APs.Add(new ApplicationPlatform() { AppName = "CSM", Platform = ePlatformType.PowerBuilder, Description = "Amdocs CSM" });
-            APs.Add(new ApplicationPlatform() { AppName = "MyWebApp", Platform = ePlatformType.Web, Description = "Web Application" });
-            APs.Add(new ApplicationPlatform() { AppName = "MyNewWebApp", Platform = ePlatformType.Web, Description = "Web Application" });
-            APs.Add(new ApplicationPlatform() { AppName = "MyWebServicesApp", Platform = ePlatformType.WebServices, Description = "WebServices Application" });
-            APs.Add(new ApplicationPlatform() { AppName = "MyMobileApp", Platform = ePlatformType.Mobile, Description = "Mobile Application" });
-            APs.Add(new ApplicationPlatform() { AppName = "Mediation", Platform = ePlatformType.Unix, Description = "Amdocs Mediation" });
-            APs.Add(new ApplicationPlatform() { AppName = "MyDosApp", Platform = ePlatformType.DOS, Description = "DOS Application" });
-            APs.Add(new ApplicationPlatform() { AppName = "MyJavaApp", Platform = ePlatformType.Java, Description = "Java Application" });
-            APs.Add(new ApplicationPlatform() { AppName = "MyMainFrameApp", Platform = ePlatformType.MainFrame, Description = "MainFrame Application" });
-            APs.Add(new ApplicationPlatform() { AppName = "MyWindowsApp", Platform = ePlatformType.Windows, Description = "Windows Application" });
+            ObservableList<TargetApplication> APs = new ObservableList<TargetApplication>();
+            APs.Add(new TargetApplication() { AppName = "CRM", Platform = ePlatformType.Java, Description = "Amdocs Client Relationship Manager" });
+            APs.Add(new TargetApplication() { AppName = "CSM", Platform = ePlatformType.PowerBuilder, Description = "Amdocs CSM" });
+            APs.Add(new TargetApplication() { AppName = "MyWebApp", Platform = ePlatformType.Web, Description = "Web Application" });
+            APs.Add(new TargetApplication() { AppName = "MyNewWebApp", Platform = ePlatformType.Web, Description = "Web Application" });
+            APs.Add(new TargetApplication() { AppName = "MyWebServicesApp", Platform = ePlatformType.WebServices, Description = "WebServices Application" });
+            APs.Add(new TargetApplication() { AppName = "MyMobileApp", Platform = ePlatformType.Mobile, Description = "Mobile Application" });
+            APs.Add(new TargetApplication() { AppName = "Mediation", Platform = ePlatformType.Unix, Description = "Amdocs Mediation" });
+            APs.Add(new TargetApplication() { AppName = "MyDosApp", Platform = ePlatformType.DOS, Description = "DOS Application" });
+            APs.Add(new TargetApplication() { AppName = "MyJavaApp", Platform = ePlatformType.Java, Description = "Java Application" });
+            APs.Add(new TargetApplication() { AppName = "MyMainFrameApp", Platform = ePlatformType.MainFrame, Description = "MainFrame Application" });
+            APs.Add(new TargetApplication() { AppName = "MyWindowsApp", Platform = ePlatformType.Windows, Description = "Windows Application" });
             SelectApplicationGrid.DataSourceList = APs;
             SelectApplicationGrid.RowDoubleClick += SelectApplicationGrid_RowDoubleClick;
         }
@@ -77,11 +78,11 @@ namespace Ginger.SolutionWindows
             SelectApplicationGrid.ShowUpDown = System.Windows.Visibility.Collapsed;
             GridViewDef view = new GridViewDef(GridViewDef.DefaultViewName);
             view.GridColsView = new ObservableList<GridColView>();
-            view.GridColsView.Add(new GridColView() { Field = nameof(ApplicationPlatform.AppName), Header = "Application", WidthWeight = 60 });
-            view.GridColsView.Add(new GridColView() { Field = nameof(ApplicationPlatform.Core), WidthWeight = 60 });
-            view.GridColsView.Add(new GridColView() { Field = nameof(ApplicationPlatform.CoreVersion), WidthWeight = 20 });      
-            view.GridColsView.Add(new GridColView() { Field = nameof(ApplicationPlatform.Description), WidthWeight = 60 });
-            view.GridColsView.Add(new GridColView() { Field = nameof(ApplicationPlatform.Platform), WidthWeight = 40 });
+            view.GridColsView.Add(new GridColView() { Field = nameof(TargetApplication.AppName), Header = "Application", WidthWeight = 60 });
+            //view.GridColsView.Add(new GridColView() { Field = nameof(ApplicationPlatform.Core), WidthWeight = 60 });
+            //view.GridColsView.Add(new GridColView() { Field = nameof(ApplicationPlatform.CoreVersion), WidthWeight = 20 });      
+            view.GridColsView.Add(new GridColView() { Field = nameof(TargetApplication.Description), WidthWeight = 60 });
+            view.GridColsView.Add(new GridColView() { Field = nameof(TargetApplication.Platform), WidthWeight = 40 });
             SelectApplicationGrid.SetAllColumnsDefaultView(view);
             SelectApplicationGrid.InitViewItems();
         }
@@ -102,22 +103,18 @@ namespace Ginger.SolutionWindows
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            if (mSolution.ApplicationPlatforms == null)
-            {
-                mSolution.ApplicationPlatforms = new ObservableList<ApplicationPlatform>();
-            }
-            foreach (ApplicationPlatform selectedApp in SelectApplicationGrid.Grid.SelectedItems)
+            foreach (TargetApplication selectedApp in SelectApplicationGrid.Grid.SelectedItems)
             {
                 mSolution.SetUniqueApplicationName(selectedApp); 
-                mSolution.ApplicationPlatforms.Add(selectedApp);                               
+                mSolution.TargetApplications.Add(selectedApp);                               
             }
             _pageGenericWin.Close();
         }
 
         private void SelectApplicationGrid_RowDoubleClick(object sender, EventArgs e)
         {
-            mSolution.SetUniqueApplicationName((ApplicationPlatform)SelectApplicationGrid.Grid.SelectedItem);
-            mSolution.ApplicationPlatforms.Add((ApplicationPlatform)SelectApplicationGrid.Grid.SelectedItem);
+            mSolution.SetUniqueApplicationName((TargetApplication)SelectApplicationGrid.Grid.SelectedItem);
+            mSolution.TargetApplications.Add((TargetApplication)SelectApplicationGrid.Grid.SelectedItem);
             _pageGenericWin.Close();
         }
     }

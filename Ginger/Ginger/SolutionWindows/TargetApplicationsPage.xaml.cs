@@ -62,31 +62,27 @@ namespace Ginger.SolutionWindows
             xTargetApplicationsGrid.SetGridEnhancedHeader(Amdocs.Ginger.Common.Enums.eImageType.Application, "Target Applications", saveAllHandler: SaveHandler, addHandler: AddApplication);
             GridViewDef view = new GridViewDef(GridViewDef.DefaultViewName);
             view.GridColsView = new ObservableList<GridColView>();
-            view.GridColsView.Add(new GridColView() { Field = nameof(ApplicationPlatform.AppName), Header = "Name", WidthWeight = 30 });
-            view.GridColsView.Add(new GridColView() { Field = nameof(ApplicationPlatform.Description), Header = "Description", WidthWeight = 40 });
-            view.GridColsView.Add(new GridColView() { Field = nameof(ApplicationPlatform.CoreVersion), Header = "Version", WidthWeight = 15 });
+            view.GridColsView.Add(new GridColView() { Field = nameof(TargetApplication.AppName), Header = "Name", WidthWeight = 30 });
+            view.GridColsView.Add(new GridColView() { Field = nameof(TargetApplication.Description), Header = "Description", WidthWeight = 40 });
+            //view.GridColsView.Add(new GridColView() { Field = nameof(ApplicationPlatform.CoreVersion), Header = "Version", WidthWeight = 15 });
             List<string> platformesTypesList = GingerCore.General.GetEnumValues(typeof(ePlatformType));
-            view.GridColsView.Add(new GridColView() { Field = nameof(ApplicationPlatform.Platform), WidthWeight = 15, StyleType = GridColView.eGridColStyleType.ComboBox, CellValuesList = platformesTypesList });
+            view.GridColsView.Add(new GridColView() { Field = nameof(TargetApplication.Platform), WidthWeight = 15, StyleType = GridColView.eGridColStyleType.ComboBox, CellValuesList = platformesTypesList });
             xTargetApplicationsGrid.SetAllColumnsDefaultView(view);
             xTargetApplicationsGrid.InitViewItems();
             
-            xTargetApplicationsGrid.Grid.PreparingCellForEdit += ApplicationGrid_PreparingCellForEdit;
-            xTargetApplicationsGrid.Grid.CellEditEnding += ApplicationGrid_CellEditEnding;
+            //xTargetApplicationsGrid.Grid.PreparingCellForEdit += ApplicationGrid_PreparingCellForEdit;
+            //xTargetApplicationsGrid.Grid.CellEditEnding += ApplicationGrid_CellEditEnding;
         }
 
         private void LoadGridData()
         {
             if (mSolution != null)
             {
-                if (mSolution.ApplicationPlatforms == null)
-                {
-                    mSolution.ApplicationPlatforms = new ObservableList<ApplicationPlatform>();
-                }
-                xTargetApplicationsGrid.DataSourceList = mSolution.ApplicationPlatforms;
+                xTargetApplicationsGrid.DataSourceList = mSolution.TargetApplications;
             }
             else
             {
-                xTargetApplicationsGrid.DataSourceList = new ObservableList<ApplicationPlatform>();
+                xTargetApplicationsGrid.DataSourceList = new ObservableList<TargetApplication>();
             }
                 
         }
@@ -102,63 +98,63 @@ namespace Ginger.SolutionWindows
             AAP.ShowAsWindow();
         }
 
-        private void ApplicationGrid_PreparingCellForEdit(object sender, DataGridPreparingCellForEditEventArgs e)
-        {
-            if (e.Column.DisplayIndex == 0)//App Name Column
-            {
-                ApplicationPlatform currentApp = (ApplicationPlatform)xTargetApplicationsGrid.CurrentItem;
-                currentApp.NameBeforeEdit = currentApp.AppName;
-            }
-        }
+        //private void ApplicationGrid_PreparingCellForEdit(object sender, DataGridPreparingCellForEditEventArgs e)
+        //{
+        //    if (e.Column.DisplayIndex == 0)//App Name Column
+        //    {
+        //        ApplicationPlatform currentApp = (ApplicationPlatform)xTargetApplicationsGrid.CurrentItem;
+        //        currentApp.NameBeforeEdit = currentApp.AppName;
+        //    }
+        //}
 
-        private void ApplicationGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-        {
-            //Validate the name of the App is unique
-            if (e.Column.DisplayIndex == 0)//App Name Column
-            {
-                ApplicationPlatform currentApp = (ApplicationPlatform)xTargetApplicationsGrid.CurrentItem;
-                mSolution.SetUniqueApplicationName(currentApp);
+        //private void ApplicationGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        //{
+        //    //Validate the name of the App is unique
+        //    if (e.Column.DisplayIndex == 0)//App Name Column
+        //    {
+        //        ApplicationPlatform currentApp = (ApplicationPlatform)xTargetApplicationsGrid.CurrentItem;
+        //        mSolution.SetUniqueApplicationName(currentApp);
 
-                if (currentApp.AppName != currentApp.NameBeforeEdit)
-                {
-                    UpdateApplicationNameChangeInSolution(currentApp);
-                }                    
-            }
-        }
+        //        if (currentApp.AppName != currentApp.NameBeforeEdit)
+        //        {
+        //            UpdateApplicationNameChangeInSolution(currentApp);
+        //        }                    
+        //    }
+        //}
 
-        private void UpdateApplicationNameChangeInSolution(ApplicationPlatform app)
-        {
-            int numOfAfectedBFs = 0;
-            if (Reporter.ToUser(eUserMsgKey.UpdateApplicationNameChangeInSolution) == Amdocs.Ginger.Common.eUserMsgSelection.No)
-            {
-                return;
-            }
+        //private void UpdateApplicationNameChangeInSolution(ApplicationPlatform app)
+        //{
+        //    int numOfAfectedBFs = 0;
+        //    if (Reporter.ToUser(eUserMsgKey.UpdateApplicationNameChangeInSolution) == Amdocs.Ginger.Common.eUserMsgSelection.No)
+        //    {
+        //        return;
+        //    }
 
-            foreach (BusinessFlow bf in WorkSpace.Instance.SolutionRepository.GetAllRepositoryItems<BusinessFlow>())
-            {
-                //update the BF target applications
-                foreach (TargetApplication bfApp in bf.TargetApplications)
-                {
-                    if (bfApp.AppName == app.NameBeforeEdit)
-                    {                        
-                        bfApp.AppName = app.AppName;
+        //    foreach (BusinessFlow bf in WorkSpace.Instance.SolutionRepository.GetAllRepositoryItems<BusinessFlow>())
+        //    {
+        //        //update the BF target applications
+        //        foreach (TargetApplication bfApp in bf.TargetApplications)
+        //        {
+        //            if (bfApp.AppName == app.NameBeforeEdit)
+        //            {                        
+        //                bfApp.AppName = app.AppName;
 
-                        //update the bf activities
-                        foreach (Activity activity in bf.Activities)
-                        {
-                            if (activity.TargetApplication == app.NameBeforeEdit)
-                            {
-                                activity.TargetApplication = app.AppName;
-                            }
-                        }
+        //                //update the bf activities
+        //                foreach (Activity activity in bf.Activities)
+        //                {
+        //                    if (activity.TargetApplication == app.NameBeforeEdit)
+        //                    {
+        //                        activity.TargetApplication = app.AppName;
+        //                    }
+        //                }
 
-                        numOfAfectedBFs++;
-                        break;
-                    }
-                }
-            }
-            Reporter.ToUser(eUserMsgKey.StaticInfoMessage, string.Format("{0} {1} were updated successfully, please remember to Save All change.", numOfAfectedBFs, GingerDicser.GetTermResValue(eTermResKey.BusinessFlows)));
-        }
+        //                numOfAfectedBFs++;
+        //                break;
+        //            }
+        //        }
+        //    }
+        //    Reporter.ToUser(eUserMsgKey.StaticInfoMessage, string.Format("{0} {1} were updated successfully, please remember to Save All change.", numOfAfectedBFs, GingerDicser.GetTermResValue(eTermResKey.BusinessFlows)));
+        //}
 
     }
 }

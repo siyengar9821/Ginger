@@ -1437,9 +1437,6 @@
     <Compile Include="Actions\ActScriptEditPage.xaml.cs">
       <DependentUpon>ActScriptEditPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Actions\ActionsPage.xaml.cs">
-      <DependentUpon>ActionsPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Actions\ActUIASwitchWindowEditPage.xaml.cs">
       <DependentUpon>ActUIASwitchWindowEditPage.xaml</DependentUpon>
     </Compile>
@@ -1475,9 +1472,6 @@
     </Compile>
     <Compile Include="Actions\ActWindowEditPage.xaml.cs">
       <DependentUpon>ActWindowEditPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Actions\AddActionPage.xaml.cs">
-      <DependentUpon>AddActionPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Actions\ASCF\ActASCFBrowserControlEditPage.xaml.cs">
       <DependentUpon>ActASCFBrowserControlEditPage.xaml</DependentUpon>
@@ -1852,9 +1846,6 @@
       <DependentUpon>QTPImportPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="RingBuffer.cs" />
-    <Compile Include="Run\ApplicationAgentSelectionPage.xaml.cs">
-      <DependentUpon>ApplicationAgentSelectionPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="WindowExplorer\Common\ControlActionsPage.xaml.cs">
       <DependentUpon>ControlActionsPage.xaml</DependentUpon>
     </Compile>
@@ -1953,9 +1944,6 @@
       <DependentUpon>ActivityEditPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppProgressBar.cs" />
-    <Compile Include="BusinessFlowWindows\AutomatePage.xaml.cs">
-      <DependentUpon>AutomatePage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Activities\ActivitiesPage.xaml.cs">
       <DependentUpon>ActivitiesPage.xaml</DependentUpon>
     </Compile>
@@ -4010,10 +3998,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Actions\ActionsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Actions\ActUIASwitchWindowEditPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -4059,10 +4043,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Actions\ActWindowEditPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Actions\AddActionPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4422,10 +4402,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Run\ApplicationAgentSelectionPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="WindowExplorer\Common\ControlActionsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4537,10 +4513,6 @@
     <Page Include="Activities\ActivitiesMiniViewPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="BusinessFlowWindows\AutomatePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Activities\ActivitiesPage.xaml">
       <Generator>MSBuild:Compile</Generator>

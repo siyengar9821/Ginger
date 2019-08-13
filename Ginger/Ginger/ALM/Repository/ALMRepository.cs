@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using GingerCore.ALM.QC;
 using Amdocs.Ginger.Common.InterfacesLib;
 using amdocs.ginger.GingerCoreNET;
+using Amdocs.Ginger.Common.Repository;
+using System.Linq;
 
 namespace Ginger.ALM.Repository
 {
@@ -80,6 +82,44 @@ namespace Ginger.ALM.Repository
                 mALMDefectsProfilesPage = new ALMDefectsProfilesPage();
 
             mALMDefectsProfilesPage.ShowAsWindow();
+        }
+
+        internal void SetBFTargetApplications(BusinessFlow tsBusFlow)
+        {
+            if (WorkSpace.Instance.Solution.MainApplication != null)
+            {
+                //add the applications mapped to the Activities
+                foreach (Activity activ in tsBusFlow.Activities)
+                    if (activ.TargetApplicationKey != null)
+                        if (tsBusFlow.TargetApplicationsKeys.Where(x => x.Guid == activ.TargetApplicationKey.Guid).FirstOrDefault() == null)
+                        {
+                            TargetBase appAgent = WorkSpace.Instance.Solution.TargetApplications.Where(x => x.Guid == activ.TargetApplicationKey.Guid).FirstOrDefault();
+                            if (appAgent != null)
+                            {
+                                tsBusFlow.TargetApplicationsKeys.Add(appAgent.Key);
+                            }
+                        }
+                //handle non mapped Activities
+                if (tsBusFlow.TargetApplicationsKeys.Count == 0)
+                {
+                    tsBusFlow.TargetApplicationsKeys.Add(WorkSpace.Instance.Solution.MainApplication.Key);
+                }
+                foreach (Activity activ in tsBusFlow.Activities)
+                {
+                    if (activ.TargetApplicationKey == null)
+                    {
+                        activ.TargetApplicationKey = tsBusFlow.MainApplicationKey;
+                    }
+                    activ.Active = true;
+                }
+            }
+            else
+            {
+                foreach (Activity activ in tsBusFlow.Activities)
+                {
+                    activ.TargetApplicationKey = null; // no app configured on solution level
+                }
+            }
         }
 
     }

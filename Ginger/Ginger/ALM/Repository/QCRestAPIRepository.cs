@@ -174,30 +174,8 @@ namespace Ginger.ALM.Repository
                         //convert test set into BF
                         BusinessFlow tsBusFlow = ((QCRestAPICore)ALMIntegration.Instance.AlmCore).ConvertQCTestSetToBF(TS);
 
-                        if ( WorkSpace.Instance.Solution.MainApplication != null)
-                        {
-                            //add the applications mapped to the Activities
-                            foreach (Activity activ in tsBusFlow.Activities)
-                                if (string.IsNullOrEmpty(activ.TargetApplication) == false)
-                                    if (tsBusFlow.TargetApplications.Where(x => x.Name == activ.TargetApplication).FirstOrDefault() == null)
-                                    {
-                                        ApplicationPlatform appAgent =  WorkSpace.Instance.Solution.ApplicationPlatforms.Where(x => x.AppName == activ.TargetApplication).FirstOrDefault();
-                                        if (appAgent != null)
-                                            tsBusFlow.TargetApplications.Add(new TargetApplication() { AppName = appAgent.AppName });
-                                    }
-                            //handle non mapped Activities
-                            if (tsBusFlow.TargetApplications.Count == 0)
-                                tsBusFlow.TargetApplications.Add(new TargetApplication() { AppName =  WorkSpace.Instance.Solution.MainApplication });
-                            foreach (Activity activ in tsBusFlow.Activities)
-                                if (string.IsNullOrEmpty(activ.TargetApplication))
-                                    activ.TargetApplication = tsBusFlow.MainApplication;
-                        }
-                        else
-                        {
-                            foreach (Activity activ in tsBusFlow.Activities)
-                                activ.TargetApplication = null; // no app configured on solution level
-                        }
-                        
+                        SetBFTargetApplications(tsBusFlow);
+
                         WorkSpace.Instance.SolutionRepository.AddRepositoryItem(tsBusFlow);                        
                         Reporter.HideStatusMessage();
                     }

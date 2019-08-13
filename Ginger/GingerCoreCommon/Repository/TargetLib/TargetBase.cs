@@ -1,4 +1,4 @@
-#region License
+﻿#region License
 /*
 Copyright © 2014-2019 European Support Limited
 
@@ -16,17 +16,35 @@ limitations under the License.
 */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Amdocs.Ginger.Repository;
+using GingerCoreNET.SolutionRepositoryLib.RepositoryObjectsLib.PlatformsLib;
 
 namespace Amdocs.Ginger.Common.Repository
 {
     public class TargetBase : RepositoryItemBase
     {        
         public virtual string Name { get; }// impl in subclass
+
         public bool Selected { get; set; }
+        
+
+        ePlatformType mPlatform;
+        [IsSerializedForLocalRepository]
+        public ePlatformType Platform
+        {
+            get
+            {
+                return mPlatform;
+            }
+            set
+            {
+                if (mPlatform != value)
+                {
+                    mPlatform = value;
+                    OnPropertyChanged(nameof(Platform));
+                }
+            }
+        }
 
         public override string ItemName
         {

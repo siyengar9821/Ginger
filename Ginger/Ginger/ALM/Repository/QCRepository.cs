@@ -35,6 +35,7 @@ using Amdocs.Ginger.Repository;
 using GingerCoreNET.SolutionRepositoryLib.RepositoryObjectsLib.PlatformsLib;
 using amdocs.ginger.GingerCoreNET;
 using Amdocs.Ginger.Common.InterfacesLib;
+using Amdocs.Ginger.Common.Repository;
 
 namespace Ginger.ALM.Repository
 {
@@ -173,32 +174,7 @@ namespace Ginger.ALM.Repository
                         //                activ.TargetApplication = tsBusFlow.TargetApplications[0].AppName;
                         //    }
                         //}
-                        if ( WorkSpace.Instance.Solution.MainApplication != null)
-                        {
-                            //add the applications mapped to the Activities
-                            foreach (Activity activ in tsBusFlow.Activities)
-                                if (string.IsNullOrEmpty(activ.TargetApplication) == false)
-                                    if (tsBusFlow.TargetApplications.Where(x => x.Name == activ.TargetApplication).FirstOrDefault() == null)
-                                    {
-                                        ApplicationPlatform appAgent =  WorkSpace.Instance.Solution.ApplicationPlatforms.Where(x => x.AppName == activ.TargetApplication).FirstOrDefault();
-                                        if (appAgent != null)
-                                            tsBusFlow.TargetApplications.Add(new TargetApplication() { AppName = appAgent.AppName });
-                                    }
-                            //handle non mapped Activities
-                            if (tsBusFlow.TargetApplications.Count == 0)
-                                tsBusFlow.TargetApplications.Add(new TargetApplication() { AppName =  WorkSpace.Instance.Solution.MainApplication });
-                            foreach (Activity activ in tsBusFlow.Activities)
-                            {
-                                if (string.IsNullOrEmpty(activ.TargetApplication))
-                                    activ.TargetApplication = tsBusFlow.MainApplication;
-                                activ.Active = true;
-                            }
-                        }
-                        else
-                        {
-                            foreach (Activity activ in tsBusFlow.Activities)
-                                activ.TargetApplication = null; // no app configured on solution level
-                        }
+                        SetBFTargetApplications(tsBusFlow);
 
                         //save bf
                         WorkSpace.Instance.SolutionRepository.AddRepositoryItem(tsBusFlow);                        

@@ -29,6 +29,7 @@ using Amdocs.Ginger.CoreNET.TelemetryLib;
 using Amdocs.Ginger.Repository;
 using Amdocs.Ginger.Run;
 using Ginger.Reports;
+using Ginger.SolutionGeneral;
 using GingerCore;
 using GingerCore.Actions;
 using GingerCore.Actions.PlugIns;
@@ -224,7 +225,7 @@ namespace Ginger.Run
         public ObservableList<Platform> Platforms = new ObservableList<Platform>();//TODO: delete me once projects moved to new Apps/Platform config, meanwhile enable to load old run set config, but ignore the value
         
         [IsSerializedForLocalRepository]
-        public ObservableList<IApplicationAgent> ApplicationAgents { get; set; } = new ObservableList<IApplicationAgent>();
+        public ObservableList<ApplicationAgent> ApplicationAgents { get; set; } = new ObservableList<ApplicationAgent>();
         
         [IsSerializedForLocalRepository]
         public ObservableList<Guid> FilterExecutionTags = new ObservableList<Guid>();
@@ -394,7 +395,7 @@ namespace Ginger.Run
             }
         }
 
-        public ISolution CurrentSolution { get; set; }
+        public Solution CurrentSolution { get; set; }
 
         [IsSerializedForLocalRepository]
         public ObservableList<BusinessFlowRun> BusinessFlowsRunList { get; set; } = new ObservableList<BusinessFlowRun>();

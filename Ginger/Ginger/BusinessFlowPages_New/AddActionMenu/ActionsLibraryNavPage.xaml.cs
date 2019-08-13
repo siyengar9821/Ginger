@@ -20,6 +20,7 @@ using amdocs.ginger.GingerCoreNET;
 using Amdocs.Ginger.Common;
 using Amdocs.Ginger.Common.Enums;
 using Amdocs.Ginger.Common.InterfacesLib;
+using Amdocs.Ginger.Common.Repository;
 using Amdocs.Ginger.Common.Repository.PlugInsLib;
 using Amdocs.Ginger.Repository;
 using Ginger.Actions;
@@ -140,8 +141,8 @@ namespace Ginger.BusinessFlowsLibNew.AddActionMenu
                 IEnumerable<Act> OrderedActions = allActions.OrderBy(x => x.Description);
                 foreach (Act cA in OrderedActions)
                 {
-                    if (cA.LegacyActionPlatformsList.Intersect(WorkSpace.Instance.Solution.ApplicationPlatforms
-                                                                    .Where(x => mContext.BusinessFlow.CurrentActivity.TargetApplication == x.AppName)
+                    if (cA.LegacyActionPlatformsList.Intersect(WorkSpace.Instance.Solution.TargetApplications
+                                                                    .Where(x => mContext.BusinessFlow.CurrentActivity.TargetApplicationKey.Guid == x.Guid)
                                                                     .Select(x => x.Platform).ToList()).Any())
                     {
                         LegacyActions.Add(cA);
@@ -189,13 +190,12 @@ namespace Ginger.BusinessFlowsLibNew.AddActionMenu
                 {
                     return null;
                 }
-                TargetApplication TA = (TargetApplication)(from x in mContext.BusinessFlow.TargetApplications where x.Name == mContext.BusinessFlow.CurrentActivity.TargetApplication select x).FirstOrDefault();
+                TargetBase TA = (from x in WorkSpace.Instance.Solution.TargetApplications where x.Guid == mContext.BusinessFlow.CurrentActivity.TargetApplicationKey.Guid select x).FirstOrDefault();
                 if (TA == null)
                 {
-                    if (mContext.BusinessFlow.TargetApplications.Count == 1)
+                    if (mContext.BusinessFlow.TargetApplicationsKeys.Count == 1)
                     {
-                        TA = (TargetApplication)mContext.BusinessFlow.TargetApplications.FirstOrDefault();
-                        mContext.BusinessFlow.CurrentActivity.TargetApplication = TA.AppName;
+                        mContext.BusinessFlow.CurrentActivity.TargetApplicationKey = mContext.BusinessFlow.TargetApplicationsKeys.FirstOrDefault();
                     }
                     else
                     {
@@ -203,10 +203,9 @@ namespace Ginger.BusinessFlowsLibNew.AddActionMenu
                         return null;
                     }
                 }
-                ApplicationPlatform AP = (from x in WorkSpace.Instance.Solution.ApplicationPlatforms where x.AppName == TA.AppName select x).FirstOrDefault();
-                if (AP != null)
+                if (TA != null)
                 {
-                    if (a.Platforms.Contains(AP.Platform))
+                    if (a.Platforms.Contains(TA.Platform))
                     {
                         //DO Act.GetSampleAct in base
                         if ((Acts.Where(c => c.GetType() == a.GetType()).FirstOrDefault()) == null)

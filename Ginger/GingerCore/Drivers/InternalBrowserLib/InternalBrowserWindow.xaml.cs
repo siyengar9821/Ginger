@@ -1554,7 +1554,7 @@ namespace GingerCore.Drivers
                 {
                     Activity a = new Activity() { Active=true};
                     a.ActivityName = newActivityName;
-                    a.TargetApplication = mBusinessFlow.MainApplication;
+                    a.TargetApplication = mBusinessFlow.MainApplicationKey;
                     mBusinessFlow.Activities.Add(a);
                 }
             }

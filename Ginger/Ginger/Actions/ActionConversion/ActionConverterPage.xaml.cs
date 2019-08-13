@@ -32,6 +32,7 @@ using GingerCoreNET.SolutionRepositoryLib.RepositoryObjectsLib.PlatformsLib;
 using System.Windows.Input;
 using Ginger.SolutionGeneral;
 using Amdocs.Ginger.CoreNET;
+using Amdocs.Ginger.Common.Repository;
 
 namespace Ginger.Actions.ActionConversion
 {
@@ -71,7 +72,9 @@ namespace Ginger.Actions.ActionConversion
 
             btnConvert.Visibility = Visibility.Collapsed;
 
-            cmbTargetApp.BindControl(mBusinessFlow.TargetApplications.Select(x => x.Name).ToList());
+            //cmbTargetApp.BindControl(mBusinessFlow.TargetApplicationsKeys.Select(x => x.ItemName).ToList());
+            cmbTargetApp.ItemsSource = mBusinessFlow.TargetApplicationsKeys;
+            cmbTargetApp.DisplayMemberPath = nameof(TargetBase.Name);
             if ((cmbTargetApp != null) && (cmbTargetApp.Items.Count > 0))
             {
                 cmbTargetApp.SelectedIndex = 0;
@@ -164,8 +167,8 @@ namespace Ginger.Actions.ActionConversion
         private bool DoExistingPlatformCheck(ObservableList<ConvertableActionDetails> lstActionToBeConverted) 
         {
             // fetch list of existing platforms in the business flow
-            List<ePlatformType> lstExistingPlatform = mSolution.ApplicationPlatforms.Where(x => mBusinessFlow.TargetApplications
-                                               .Any(a => a.Name == x.AppName)).Select(x => x.Platform).ToList();
+            List<ePlatformType> lstExistingPlatform = mSolution.TargetApplications.Where(x => mBusinessFlow.TargetApplicationsKeys
+                                               .Any(a => a.Guid == x.Guid)).Select(x => x.Platform).ToList();
             Dictionary<ePlatformType, string> lstMissingPlatform = new Dictionary<ePlatformType, string>();
             // create list of missing platforms
             foreach (ConvertableActionDetails ACH in lstActionToBeConverted)
@@ -255,7 +258,7 @@ namespace Ginger.Actions.ActionConversion
                                 // if the user has not chosen any target application in the combobox then, we set it as empty
                                 if ((Boolean)chkDefaultTargetApp.IsChecked && cmbTargetApp.SelectedIndex != -1)
                                 {
-                                    newActivity.TargetApplication = cmbTargetApp.SelectedValue.ToString();
+                                    newActivity.TargetApplicationKey = cmbTargetApp.SelectedValue.ToString();
                                 }
                                 else
                                     newActivity.TargetApplication = string.Empty;

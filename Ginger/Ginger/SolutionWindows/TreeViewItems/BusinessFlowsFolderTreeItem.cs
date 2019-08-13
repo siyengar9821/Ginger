@@ -217,17 +217,15 @@ namespace Ginger.SolutionWindows.TreeViewItems
 
                     //customize the imported BF
                     importedBF.Guid = Guid.NewGuid();
-                    for (int i = 0; i < importedBF.TargetApplications.Count; i++)
-                        if ( WorkSpace.Instance.Solution.ApplicationPlatforms.Where(x => x.AppName == importedBF.TargetApplications[i].Name).FirstOrDefault() == null)
+                    for (int i = 0; i < importedBF.TargetApplicationsKeys.Count; i++)
+                        if (WorkSpace.Instance.Solution.TargetApplications.Where(x => x.Guid == importedBF.TargetApplicationsKeys[i].Guid).FirstOrDefault() == null)
                         {
-                            importedBF.TargetApplications.RemoveAt(i);//No such Application so Delete it
+                            importedBF.TargetApplicationsKeys.RemoveAt(i);//No such Application so Delete it
                             i--;
                         }                    
-                    if (importedBF.TargetApplications.Count == 0)
+                    if (importedBF.TargetApplicationsKeys.Count == 0 && WorkSpace.Instance.Solution.MainApplication != null)
                     {
-                        TargetApplication ta = new TargetApplication();
-                        ta.AppName =  WorkSpace.Instance.Solution.ApplicationPlatforms[0].AppName;
-                        importedBF.TargetApplications.Add(ta);
+                        importedBF.TargetApplicationsKeys.Add(WorkSpace.Instance.Solution.MainApplication.Key);
                     }
 
                     WorkSpace.Instance.SolutionRepository.SaveRepositoryItem(importedBF);
@@ -249,7 +247,7 @@ namespace Ginger.SolutionWindows.TreeViewItems
             {
                 BusinessFlow BizFlow = WorkSpace.Instance.GetNewBusinessFlow(BizFlowName);
 
-                if (WorkSpace.Instance.Solution.ApplicationPlatforms.Count != 1)
+                if (WorkSpace.Instance.Solution.TargetApplications.Count != 1)
                 {
                     EditBusinessFlowAppsPage EBFP = new EditBusinessFlowAppsPage(BizFlow,true);
                     EBFP.ResetPlatformSelection();
@@ -258,8 +256,11 @@ namespace Ginger.SolutionWindows.TreeViewItems
                 }
                 else
                 {
-                    BizFlow.TargetApplications.Add(new TargetApplication() { AppName = WorkSpace.Instance.Solution.MainApplication });
-                    BizFlow.CurrentActivity.TargetApplication = BizFlow.TargetApplications[0].Name;
+                    if (WorkSpace.Instance.Solution.MainApplication != null)
+                    {
+                        BizFlow.TargetApplicationsKeys.Add(WorkSpace.Instance.Solution.MainApplication.Key);
+                        BizFlow.CurrentActivity.TargetApplicationKey = WorkSpace.Instance.Solution.MainApplication.Key;
+                    }
                 }
 
                 mBusFlowsFolder.AddRepositoryItem(BizFlow);                

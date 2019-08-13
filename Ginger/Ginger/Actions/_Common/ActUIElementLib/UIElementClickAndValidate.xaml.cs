@@ -150,8 +150,8 @@ namespace Ginger.Actions._Common.ActUIElementLib
 
         private ePlatformType GetActionPlatform()
         {
-            string targetapp = (Context.GetAsContext(mAct.Context)).BusinessFlow.CurrentActivity.TargetApplication;
-            ePlatformType platform = (from x in  WorkSpace.Instance.Solution.ApplicationPlatforms where x.AppName == targetapp select x.Platform).FirstOrDefault();
+            RepositoryItemKey targetappkey = (Context.GetAsContext(mAct.Context)).BusinessFlow.CurrentActivity.TargetApplicationKey;
+            ePlatformType platform = (from x in  WorkSpace.Instance.Solution.TargetApplications where x.Guid == targetappkey.Guid select x.Platform).FirstOrDefault();
             return platform;
         }
     }

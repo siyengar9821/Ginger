@@ -309,7 +309,7 @@ namespace Ginger.BusinessFlowFolder
         {
             Activity a = new Activity() { Active = true };
             a.Active = true;
-            a.TargetApplication = mBusinessFlow.MainApplication;
+            a.TargetApplication = mBusinessFlow.MainApplicationKey;
             a.ActivityName = "New " + GingerDicser.GetTermResValue(eTermResKey.Activity);
             mBusinessFlow.AddActivity(a);
             mBusinessFlow.Activities.CurrentItem = a;         

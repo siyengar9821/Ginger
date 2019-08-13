@@ -244,19 +244,14 @@ namespace Ginger.SolutionWindows
 
         private void SelectButton_Click(object sender, RoutedEventArgs e)
         {
-            if (mSolution.ApplicationPlatforms == null)
-            {
-                mSolution.ApplicationPlatforms = new ObservableList<ApplicationPlatform>();
-            }
-
-            mSolution.ApplicationPlatforms.Clear();
+            mSolution.TargetApplications.Clear();
             AddApplicationPage AAP = new AddApplicationPage(mSolution);
             AAP.ShowAsWindow();
 
-            if (mSolution.ApplicationPlatforms.Count() >0 )
+            if (mSolution.TargetApplications.Count() > 0)
             {
-                ApplicationTextBox.Text = mSolution.ApplicationPlatforms[0].AppName;
-                MainPlatformComboBox.SelectedValue = mSolution.ApplicationPlatforms[0].Platform;
+                ApplicationTextBox.Text = mSolution.TargetApplications[0].Name;
+                MainPlatformComboBox.SelectedValue = mSolution.TargetApplications[0].Platform;
             }
         }
     }

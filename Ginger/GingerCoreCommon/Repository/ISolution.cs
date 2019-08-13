@@ -29,7 +29,7 @@ namespace Amdocs.Ginger.Repository
         string Name { get; set; }
         string Folder { get; set; }
         ObservableList<VariableBase> Variables { get; set; }
-        ObservableList<ApplicationPlatform> ApplicationPlatforms { get; set; }
+        //ObservableList<ApplicationPlatform> ApplicationPlatforms { get; set; }
         ObservableList<ExecutionLoggerConfiguration> ExecutionLoggerConfigurationSetList { get; set; }
         ObservableList<HTMLReportsConfiguration> HTMLReportsConfigurationSetList { get; set; }
     }

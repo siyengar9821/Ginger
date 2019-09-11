@@ -463,10 +463,10 @@ namespace Ginger.Run
 
         public async Task<int> RunRunnerAsync()
         {
-            var result = await Task.Run(() => {
+            var result = await Task.Factory.StartNew(() => {
                 RunRunner();
                 return 1;
-            });
+            }, CancellationToken.None, TaskCreationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
             return result;
         }
 
@@ -880,10 +880,10 @@ namespace Ginger.Run
         public async Task<int> RunActionAsync(Act act, bool checkIfActionAllowedToRun = true, bool standaloneExecution = false)
         {
             NotifyExecutionContext(AutomationTabContext.ActionRun);
-            var result = await Task.Run(() => {
+            var result = await Task.Factory.StartNew(() => {
                 RunAction(act, checkIfActionAllowedToRun, standaloneExecution);
-                return 1;   
-            });
+                return 1;
+            }, CancellationToken.None, TaskCreationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
             return result;
         }
 
@@ -2821,10 +2821,10 @@ namespace Ginger.Run
         public async Task<int> RunActivityAsync(Activity activity, bool Continue=false, bool standaloneExecution = false)
         {
             NotifyExecutionContext(AutomationTabContext.ActivityRun);
-            var result = await Task.Run(() => {
+            var result = await Task.Factory.StartNew(() => {
                 RunActivity(activity, false, standaloneExecution);
-                return 1;  
-            });
+                return 1;
+            }, CancellationToken.None, TaskCreationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
             return result;
         }
 
@@ -3149,11 +3149,11 @@ namespace Ginger.Run
 
         public async Task<int> ContinueRunAsync(eContinueLevel continueLevel, eContinueFrom continueFrom, BusinessFlow specificBusinessFlow = null, Activity specificActivity = null, Act specificAction = null)
         {
-            var result = await Task.Run(() =>
+            var result = await Task.Factory.StartNew(() =>
             {
                 ContinueRun(continueLevel,continueFrom, specificBusinessFlow, specificActivity, specificAction);
                 return 1;
-            });
+            }, CancellationToken.None, TaskCreationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
             return result;
         }
         public void ResetStatus(eContinueLevel continueLevel, eResetStatus resetFrom, BusinessFlow specificBusinessFlow = null, Activity specificActivity = null, Act specificAction = null)
@@ -3276,11 +3276,11 @@ namespace Ginger.Run
         public async Task<int> RunBusinessFlowAsync(BusinessFlow businessFlow, bool standaloneBfExecution = false, bool doContinueRun = false)
         {
             NotifyExecutionContext(AutomationTabContext.BussinessFlowRun);
-            var result = await Task.Run(() =>
+            var result = await Task.Factory.StartNew(() =>
             {
                 RunBusinessFlow(businessFlow, standaloneBfExecution, doContinueRun);
                 return 1;
-            });
+            }, CancellationToken.None, TaskCreationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
             return result;
         }
    

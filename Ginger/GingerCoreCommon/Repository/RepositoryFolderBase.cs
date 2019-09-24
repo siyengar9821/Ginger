@@ -176,7 +176,7 @@ namespace Amdocs.Ginger.Repository
         /// <param name="repositoryFolder"></param>
         public abstract void MoveItem(RepositoryItemBase repositoryItem, RepositoryFolderBase repositoryFolder);
 
-        private static ISourceControl SourceControl;
+        // private static ISourceControl SourceControl;
 
         private eImageType? mSourceControlStatus = eImageType.Null;
 
@@ -196,7 +196,8 @@ namespace Amdocs.Ginger.Repository
         {
             if (mSourceControlStatus != eImageType.Null)
             {
-                mSourceControlStatus = await SourceControl.GetFileStatusForRepositoryItemPath(FolderFullPath).ConfigureAwait(true);
+                // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ZZZZZZZZZZZZ
+                //mSourceControlStatus = await SourceControl.GetFileStatusForRepositoryItemPath(FolderFullPath).ConfigureAwait(true);
                 OnPropertyChanged(nameof(SourceControlStatus));
             }
         }
@@ -206,22 +207,22 @@ namespace Amdocs.Ginger.Repository
         /// </summary>
         public void RefreshFolderAndChildElementsSourceControlStatus()
         {
-            RefreshFolderSourceControlStatus();
-            //sub items
-            foreach (RepositoryItemBase ri in GetFolderRepositoryItems())
-            {
-                ri.RefreshSourceControlStatus();
-            }
-            //sub folders
-            foreach (RepositoryFolderBase subFolder in GetSubFoldersAsFolderBase())
-            {
-                subFolder.RefreshFolderAndChildElementsSourceControlStatus();
-            }
+            //RefreshFolderSourceControlStatus();
+            ////sub items
+            //foreach (RepositoryItemBase ri in GetFolderRepositoryItems())
+            //{
+            //    ri.RefreshSourceControlStatus();
+            //}
+            ////sub folders
+            //foreach (RepositoryFolderBase subFolder in GetSubFoldersAsFolderBase())
+            //{
+            //    subFolder.RefreshFolderAndChildElementsSourceControlStatus();
+            //}
         }
 
-        public static void SetSourceControl(ISourceControl sourceControl)
-        {
-            SourceControl = sourceControl;
-        }
+        //public static void SetSourceControl(ISourceControl sourceControl)
+        //{
+        //    SourceControl = sourceControl;
+        //}
     }
 }

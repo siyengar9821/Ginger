@@ -1,4 +1,4 @@
-#region License
+﻿#region License
 /*
 Copyright © 2014-2019 European Support Limited
 
@@ -17,6 +17,7 @@ limitations under the License.
 #endregion
 
 using Amdocs.Ginger.Common;
+using Amdocs.Ginger.Common.Enums;
 
 namespace GingerCoreNET.SourceControl
 {
@@ -34,6 +35,36 @@ namespace GingerCoreNET.SourceControl
             Unknown,
             LockedByMe,
             LockedByAnotherUser
+        }
+
+        public eImageType ImageType
+        {
+            get
+            {
+                switch (Status)
+                {
+                    case eRepositoryItemStatus.New:
+                        return eImageType.SourceControlNew;
+
+                    case eRepositoryItemStatus.Modified:
+                        return eImageType.SourceControlModified;
+
+                    case eRepositoryItemStatus.Equel:
+                        return eImageType.SourceControlEquel;
+
+                    case eRepositoryItemStatus.LockedByMe:
+                        return eImageType.SourceControlLockedByMe;
+
+                    case eRepositoryItemStatus.LockedByAnotherUser:
+                        return eImageType.SourceControlLockedByAnotherUser;
+
+                    case eRepositoryItemStatus.Unknown:
+                        return eImageType.SourceControlError;
+
+                    default:
+                        return eImageType.SourceControlDeleted;
+                }
+            }
         }
 
         public string Name { get; set; }

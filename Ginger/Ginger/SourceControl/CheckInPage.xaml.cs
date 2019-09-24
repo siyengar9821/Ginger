@@ -341,8 +341,8 @@ namespace Ginger.SourceControl
                     {
                         RepositoryItemBase repoItem = WorkSpace.Instance.SolutionRepository.GetRepositoryItemByPath(fi.Path);
                         if (repoItem != null)
-                        {
-                            repoItem.RefreshSourceControlStatus();
+                        {                            
+                            WorkSpace.Instance.SourceControl.UpdateStatus(repoItem);
                         }
 
                         AddToParentFoldersToRefresh(Path.GetDirectoryName(fi.Path));

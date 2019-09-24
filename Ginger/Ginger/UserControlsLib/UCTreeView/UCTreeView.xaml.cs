@@ -17,6 +17,7 @@ limitations under the License.
 #endregion
 
 using Amdocs.Ginger.Repository;
+using Amdocs.Ginger.UserControls;
 using GingerWPF.DragDropLib;
 using System;
 using System.Collections.Generic;
@@ -201,14 +202,22 @@ namespace GingerWPF.UserControlsLib.UCTreeView
         {
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
-            TreeViewItem TVI = (TreeViewItem)e.Source;
+            TreeViewItem TVI = (TreeViewItem)e.Source;                        
             RemoveDummyNode(TVI);
+
+            // Add processing icon
+
+            // Check why no spin !!!
+            int processingIcon = ((StackPanel)TVI.Header).Children.Add(new ImageMakerControl() { ImageType = Amdocs.Ginger.Common.Enums.eImageType.Processing, Width = 16, Height= 16 });            
             SetRepositoryFolderIsExpanded(TVI, true);
             SetTreeNodeItemChilds(TVI);
             GingerCore.General.DoEvents();
             // remove the handler as expand data is cached now on tree
             TVI.Expanded -= TVI_Expanded;
             TVI.Expanded += TVI_ExtraExpanded;
+
+            ((StackPanel)TVI.Header).Children.RemoveAt(processingIcon);
+
 
             Mouse.OverrideCursor = null;
         }
@@ -236,20 +245,18 @@ namespace GingerWPF.UserControlsLib.UCTreeView
         }
 
         private void SetTreeNodeItemChilds(TreeViewItem TVI)
-        {
-            // TODO: remove temp code after cleanup 
+        {            
             if (TVI.Tag is ITreeViewItem)
             {
                 ITreeViewItem ITVI = (ITreeViewItem)TVI.Tag;
 
                 List<ITreeViewItem> Childs = null;
-                Childs = ITVI.Childrens();
-
+                Childs = ITVI.Childrens();                
                 TVI.Items.Clear();
                 if (Childs != null)
                 {
                     foreach (ITreeViewItem item in Childs)
-                    {
+                    {                        
                         if (TreeChildFolderOnly == true && item.IsExpandable() == false)
                         {
                             continue;
@@ -264,10 +271,9 @@ namespace GingerWPF.UserControlsLib.UCTreeView
                         else
                         {
                             AddItem(item, TVI);
-                        }
-
+                        }                        
                     }
-                }
+                }                            
             }
         }
 
@@ -317,7 +323,7 @@ namespace GingerWPF.UserControlsLib.UCTreeView
 
             return false;
         }
-
+        
         private void RemoveDummyNode(TreeViewItem node)
         {
             if (node.Items.Count > 0)

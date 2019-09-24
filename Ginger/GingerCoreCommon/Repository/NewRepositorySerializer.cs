@@ -57,14 +57,14 @@ namespace Amdocs.Ginger.Repository
         // We keep year/month/day hour/minutes - removed seconds and millis
         private const string cDateTimeXMLFormat = "yyyyMMddHHmm";
 
-        public delegate object NewRepositorySerializerEventHandler(NewRepositorySerilizerEventArgs EventArgs);
+        public delegate object NewRepositorySerializerEventHandler(NewRepositorySerializerEventArgs EventArgs);
         public static event NewRepositorySerializerEventHandler NewRepositorySerializerEvent;        
-        public static object OnNewRepositorySerializerEvent(NewRepositorySerilizerEventArgs.eEventType EvType, string FilePath, string XML, RepositoryItemBase TargetObj)
+        public static object OnNewRepositorySerializerEvent(NewRepositorySerializerEventArgs.eEventType EvType, string FilePath, string XML, RepositoryItemBase TargetObj)
         {
             NewRepositorySerializerEventHandler handler = NewRepositorySerializerEvent;
             if (handler != null)
             {
-               return handler(new NewRepositorySerilizerEventArgs(EvType, FilePath, XML, TargetObj));
+               return handler(new NewRepositorySerializerEventArgs(EvType, FilePath, XML, TargetObj));
             }
 
             return null;
@@ -571,7 +571,7 @@ namespace Amdocs.Ginger.Repository
             else
             {
                 //Item saved by old Serialize so calling it to load the XML 
-                return (RepositoryItemBase)OnNewRepositorySerializerEvent(NewRepositorySerilizerEventArgs.eEventType.LoadWithOldSerilizerRequired, filePath, xml, targetObj);
+                return (RepositoryItemBase)OnNewRepositorySerializerEvent(NewRepositorySerializerEventArgs.eEventType.LoadWithOldSerilizerRequired, filePath, xml, targetObj);
             }
 
             return (RepositoryItemBase)RootObj;
@@ -1416,7 +1416,7 @@ namespace Amdocs.Ginger.Repository
 
 
     //TODO: move to separate file
-    public class NewRepositorySerilizerEventArgs
+    public class NewRepositorySerializerEventArgs
     {
         public enum eEventType
         {
@@ -1428,7 +1428,7 @@ namespace Amdocs.Ginger.Repository
         public string XML;
         public RepositoryItemBase TargetObj;
 
-        public NewRepositorySerilizerEventArgs(eEventType EventType, string FilePath, string XML, RepositoryItemBase TargetObj)
+        public NewRepositorySerializerEventArgs(eEventType EventType, string FilePath, string XML, RepositoryItemBase TargetObj)
         {
             this.EventType = EventType;
             this.FilePath = FilePath;

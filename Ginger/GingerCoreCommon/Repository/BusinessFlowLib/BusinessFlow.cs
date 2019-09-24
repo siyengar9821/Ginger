@@ -305,6 +305,11 @@ namespace GingerCore
             }
         }
 
+        public override void PostSerialization()
+        {
+            // TODO: move to Activiites lazy load
+            // AttachActivitiesGroupsAndActivities();
+        }
 
         [IsSerializedForLocalRepository]
         public ObservableList<VariableBase> Variables { get; set; } = new ObservableList<VariableBase>();

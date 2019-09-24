@@ -23,12 +23,15 @@ using Amdocs.Ginger.Repository;
 using Amdocs.Ginger.UserControls;
 using Ginger;
 using Ginger.SourceControl;
+using GingerCore;
 using GingerCoreNET.SourceControl;
 using GingerWPF.UserControlsLib.UCTreeView;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -461,8 +464,8 @@ namespace GingerWPF.TreeViewItemsLib
 
         protected List<ITreeViewItem> GetChildrentGeneric<T>(RepositoryFolder<T> RF)
         {
-            List<ITreeViewItem> Childrens = new List<ITreeViewItem>();
-
+            
+            List<ITreeViewItem> Childrens = new List<ITreeViewItem>();            
             ObservableList<RepositoryFolder<T>> subFolders = RF.GetSubFolders();
             foreach (RepositoryFolder<T> subFolder in subFolders)
             {
@@ -486,8 +489,60 @@ namespace GingerWPF.TreeViewItemsLib
                     Childrens.Add(tvi);
                 }
             }
+
+            if (WorkSpace.Instance.SourceControl != null)
+            {
+                // TODO:move code to separate method
+
+
+                // Update each item source control status, get status of all items in folder in one shot then update the TVIs            
+                Task.Factory.StartNew(() =>
+                {
+                    string error = null;
+
+                    var statuses = WorkSpace.Instance.SourceControl.GetPathFilesStatus(RF.FolderFullPath, ref error);
+                    //TODO: Parallel
+
+                    Parallel.ForEach(Childrens, (tvi) =>
+                    {
+                        object nodeObject = tvi.NodeObject();
+                        if (nodeObject is RepositoryItemBase)
+                        {
+                            string fullPath = ((RepositoryItemBase)tvi.NodeObject()).FilePath;
+                            var status = (from x in statuses where x.Path == fullPath select x).SingleOrDefault();
+                            if (status != null)
+                            {
+                                ((RepositoryItemBase)nodeObject).SourceControlStatus = status.ImageType;
+                            }
+                            else
+                            {
+                                //TODO: handle ERR !!!!!!!!!!!!!! 290 vs 365 !??
+                            }
+                        }
+                        else
+                        {
+                            // assume RepositoryFolder
+                            // TODO: find a way to remove dynamic
+                            string fullPath = ((dynamic)nodeObject).FolderFullPath;
+                            var status = (from x in statuses where x.Path == fullPath select x).SingleOrDefault();
+                            if (status != null)
+                            {
+                                ((RepositoryItemBase)nodeObject).SourceControlStatus = status.ImageType;
+                            }
+                            else
+                            {
+                                //TODO: handle ERR !!!!!!!!
+                            }
+                        }                        
+                    });
+                });
+            }
+
+
             return Childrens;
         }
+
+        
 
         /// <summary>
         /// The function creates the tree node item header
@@ -507,7 +562,6 @@ namespace GingerWPF.TreeViewItemsLib
                 // Source control image
                 ImageMakerControl sourceControlImage = new ImageMakerControl();
                 sourceControlImage.BindControl(repoItem, nameof(RepositoryItemBase.SourceControlStatus));
-                repoItem.RefreshSourceControlStatus();
                 sourceControlImage.Width = 8;
                 sourceControlImage.Height = 8;
                 stack.Children.Add(sourceControlImage);

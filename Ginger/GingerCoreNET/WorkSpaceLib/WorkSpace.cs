@@ -441,8 +441,9 @@ namespace amdocs.ginger.GingerCoreNET
                 solution.SourceControl.SourceControlTimeout = WorkSpace.Instance.UserProfile.SolutionSourceControlTimeout;
 
                 WorkSpace.Instance.SourceControl = solution.SourceControl;
-                RepositoryItemBase.SetSourceControl(solution.SourceControl);
-                RepositoryFolderBase.SetSourceControl(solution.SourceControl);
+
+                // RepositoryItemBase.SetSourceControl(solution.SourceControl);
+                // RepositoryFolderBase.SetSourceControl(solution.SourceControl);
             }
         }
 
@@ -498,6 +499,8 @@ namespace amdocs.ginger.GingerCoreNET
                     AppSolutionAutoSave.SolutionAutoSaveEnd();
                 }
             }
+
+            SourceControl = null;
 
             //Reset values
             mPluginsManager = new PluginsManager();

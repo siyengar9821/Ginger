@@ -490,8 +490,8 @@ namespace Amdocs.Ginger.Repository
                         item = GetItemFromCacheByFileName(e.FullPath);
                         if (item != null)
                         {
-                            NewRepositorySerializer.ReloadObjectFromFile(item);
-                            item.RefreshSourceControlStatus();
+                            NewRepositorySerializer.ReloadObjectFromFile(item);                            
+                            //item.RefreshSourceControlStatus();
                         }
                         break;
                     case WatcherChangeTypes.Deleted:

@@ -117,54 +117,7 @@ namespace Ginger
             NewRepositorySerializer.AddClasses(list);
         }
 
-        //private static void HandleSolutionLoadSourceControl(Solution solution)
-        //{
-        //    string RepositoryRootFolder = string.Empty;
-        //    SourceControlBase.eSourceControlType type = SourceControlIntegration.CheckForSolutionSourceControlType(solution.Folder, ref RepositoryRootFolder);
-        //    if (type == SourceControlBase.eSourceControlType.GIT)
-        //    {
-        //        solution.SourceControl = new GITSourceControl();
-        //    }
-        //    else if (type == SourceControlBase.eSourceControlType.SVN)
-        //    {
-        //        solution.SourceControl = new SVNSourceControl();
-        //    }
-
-        //    if (solution.SourceControl != null)
-        //    {
-        //        if (string.IsNullOrEmpty(WorkSpace.Instance.UserProfile.SolutionSourceControlUser) || string.IsNullOrEmpty(WorkSpace.Instance.UserProfile.SolutionSourceControlPass))
-        //        {
-        //            if (WorkSpace.Instance.UserProfile.SourceControlUser != null && WorkSpace.Instance.UserProfile.SourceControlPass != null)
-        //            {
-        //                solution.SourceControl.SourceControlUser = WorkSpace.Instance.UserProfile.SourceControlUser;
-        //                solution.SourceControl.SourceControlPass = WorkSpace.Instance.UserProfile.SourceControlPass;
-        //                solution.SourceControl.SolutionSourceControlAuthorEmail = WorkSpace.Instance.UserProfile.SolutionSourceControlAuthorEmail;
-        //                solution.SourceControl.SolutionSourceControlAuthorName = WorkSpace.Instance.UserProfile.SolutionSourceControlAuthorName;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            solution.SourceControl.SourceControlUser = WorkSpace.Instance.UserProfile.SolutionSourceControlUser;
-        //            solution.SourceControl.SourceControlPass = WorkSpace.Instance.UserProfile.SolutionSourceControlPass;
-        //            solution.SourceControl.SolutionSourceControlAuthorEmail = WorkSpace.Instance.UserProfile.SolutionSourceControlAuthorEmail;
-        //            solution.SourceControl.SolutionSourceControlAuthorName = WorkSpace.Instance.UserProfile.SolutionSourceControlAuthorName;
-        //        }
-
-        //        string error = string.Empty;
-        //        solution.SourceControl.SolutionFolder = solution.Folder;
-        //        solution.SourceControl.RepositoryRootFolder = RepositoryRootFolder;
-        //        solution.SourceControl.SourceControlURL = solution.SourceControl.GetRepositoryURL(ref error);
-        //        solution.SourceControl.SourceControlLocalFolder = WorkSpace.Instance.UserProfile.SourceControlLocalFolder;
-        //        solution.SourceControl.SourceControlProxyAddress = WorkSpace.Instance.UserProfile.SolutionSourceControlProxyAddress;
-        //        solution.SourceControl.SourceControlProxyPort = WorkSpace.Instance.UserProfile.SolutionSourceControlProxyPort;
-        //        solution.SourceControl.SourceControlTimeout = WorkSpace.Instance.UserProfile.SolutionSourceControlTimeout;
-
-        //        WorkSpace.Instance.SourceControl = solution.SourceControl;
-        //        RepositoryItemBase.SetSourceControl(solution.SourceControl);
-        //        RepositoryFolderBase.SetSourceControl(solution.SourceControl);
-        //    }
-        //}
-
+       
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {            
             Exception ex = e.Exception;

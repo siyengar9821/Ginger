@@ -156,7 +156,7 @@ namespace Amdocs.Ginger.Repository
             rf.SaveRepositoryItem(filePath, txt);
             repositoryItem.FileName = filePath;
             repositoryItem.FilePath = filePath;
-            repositoryItem.RefreshSourceControlStatus();
+            // repositoryItem.RefreshSourceControlStatus();
             RefreshParentFoldersSoucerControlStatus(Path.GetDirectoryName(repositoryItem.FilePath));
 
             if (repositoryItem.DirtyStatus != Common.Enums.eDirtyStatus.NoTracked)

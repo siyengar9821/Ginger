@@ -499,15 +499,13 @@ namespace amdocs.ginger.GingerCoreNET
                     AppSolutionAutoSave.SolutionAutoSaveEnd();
                 }
             }
-
-            SourceControl = null;
-
+            
             //Reset values
             mPluginsManager = new PluginsManager();
             SolutionRepository = null;
             SourceControl = null;            
             Solution = null;
-
+            SourceControl = null;
             EventHandler.SolutionClosed();
         }
 

@@ -129,7 +129,7 @@ namespace GingerCoreNET.SourceControl
         //clear locks
         public abstract void CleanUp(string path);
 
-        //prevent other users from commiting changes to this item
+        //prevent other users from committing changes to this item
         public abstract bool Lock(string path, string lockComment, ref string error);
         //allowing other users to commit changes to this item
         public abstract bool UnLock(string path, ref string error);
@@ -149,7 +149,7 @@ namespace GingerCoreNET.SourceControl
             public List<string> Paths { get; set; }
         }
 
-        // If during check-in or get latest there is confilct we will get the list here, ginger app will register handler to popup a window to ask the user what to do
+        // If during check-in or get latest there is conflict we will get the list here, ginger app will register handler to popup a window to ask the user what to do
         public delegate void ConflictEventHandler(ConflictEventArgs e);
 
         public event ConflictEventHandler Conflict;

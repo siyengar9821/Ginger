@@ -24,6 +24,7 @@ using GingerCore.Actions.Java;
 using GingerCore.Actions.VisualTesting;
 using GingerCore.Drivers.Common;
 using GingerCore.Drivers.CommunicationProtocol;
+using GingerCore.Platforms.PlatformsInfo;
 using GingerCoreNET.SolutionRepositoryLib.RepositoryObjectsLib.PlatformsLib;
 using System;
 using System.Collections.Generic;
@@ -117,6 +118,7 @@ namespace GingerCore.Drivers.JavaDriverLib
             HighLightElement,
             GetCurrentWindowVisibleControls,
             GetContainerControls,
+            GetEditorChildrens,
             GetComponentFromCursor,
             Echo,
             GetProperties
@@ -685,6 +687,18 @@ namespace GingerCore.Drivers.JavaDriverLib
                         actJavaBrowserElement.ExInfo = val;
                     }
                     resp = Response3;
+                    break;
+
+                case ActBrowserElement.eControlAction.SwitchFrame:
+                    PayLoad PLSwitchFrame = new PayLoad("HTMLElementAction", "SwitchFrame", actJavaBrowserElement.LocateBy.ToString(), actJavaBrowserElement.LocateValueCalculated, actJavaBrowserElement.ValueForDriver);
+                    PayLoad ResponseSwitchFrame = Send(PLSwitchFrame);
+                    resp = ResponseSwitchFrame;
+                    break;
+
+                case ActBrowserElement.eControlAction.RunJavaScript:
+                    PayLoad PLRunJS = new PayLoad("RunJavaScript", actJavaBrowserElement.LocateBy.ToString(), actJavaBrowserElement.LocateValueCalculated, actJavaBrowserElement.ValueForDriver);
+                    PayLoad ResponseRunJS = Send(PLRunJS);
+                    resp = ResponseRunJS;
                     break;
             }
             return resp;
@@ -1759,7 +1773,7 @@ namespace GingerCore.Drivers.JavaDriverLib
                 {
                     JavaElementInfo ci = (JavaElementInfo)GetControlInfoFromPayLoad(pl);
                     list.Add(ci);
-                    if (ci.ElementType != null && ci.ElementType.Contains("com.amdocs.uif.widgets.browser") )
+                    if (ci.ElementTypeEnum==eElementType.Browser)
                     {
                         PayLoad PL= IsElementDisplayed(eLocateBy.ByXPath.ToString(), ci.XPath);
                         String flag = PL.GetValueString();
@@ -1774,7 +1788,8 @@ namespace GingerCore.Drivers.JavaDriverLib
 
                         }
                     }
-                    else if(ci.ElementType != null && ci.ElementType.Contains("JEditor"))
+                    //TODO: J.G. use elementTypeEnum instead of contains
+                    else if (ci.ElementType != null && ci.ElementType.Contains("JEditor"))
                     {
                         InitializeJEditorPane(ci);
                         List<ElementInfo> HTMLControlsPL = GetBrowserVisibleControls();
@@ -1898,6 +1913,7 @@ namespace GingerCore.Drivers.JavaDriverLib
             JEI.Value = pl.GetValueString();
             JEI.Path = pl.GetValueString();
             JEI.XPath = pl.GetValueString();
+            JEI.ElementTypeEnum = JavaPlatform.GetElementType(JEI.ElementType);
             //If name if blank keep it blank. else creating issue for spy and highlight, as we try to search with below
             if (String.IsNullOrEmpty(JEI.ElementTitle))
             {
@@ -1931,6 +1947,15 @@ namespace GingerCore.Drivers.JavaDriverLib
             EI.Path = PL.GetValueString();
             EI.XPath = PL.GetValueString();
             EI.RelXpath = PL.GetValueString();
+            string IsExpandable = PL.GetValueString();
+            if (IsExpandable == "Y")
+            {
+                EI.IsExpandable = true;
+            }
+            else
+            {
+                EI.IsExpandable = false;
+            }
             return EI;
         }
 
@@ -2259,7 +2284,7 @@ namespace GingerCore.Drivers.JavaDriverLib
 
                 if (!(String.IsNullOrEmpty(((HTMLElementInfo)ElementInfo).ID)))
                 {
-                    if (ElementInfo.XPath != "/" && !ElementInfo.ElementType.Contains("JEditor"))
+                    if (ElementInfo.XPath != "/" && !ElementInfo.ElementType.Contains("JEditor"))//?????????
                     {
                         ElementLocator locator = new ElementLocator();
                         locator.LocateBy = eLocateBy.ByID;
@@ -2387,16 +2412,8 @@ namespace GingerCore.Drivers.JavaDriverLib
             List<PayLoad> ElementsPL = PLRC.GetListPayLoad();
             foreach (PayLoad PL in ElementsPL)
             {
-                HTMLElementInfo EI = new HTMLElementInfo();
-                EI.ElementTitle = PL.GetValueString();
-                EI.ID = PL.GetValueString();
-                EI.Value = PL.GetValueString();
-                EI.Name = PL.GetValueString();
-                EI.ElementType = PL.GetValueString();
-                EI.Path = PL.GetValueString();
-                EI.XPath = PL.GetValueString();
-                EI.RelXpath = PL.GetValueString();
-                EI.WindowExplorer = this;
+                HTMLElementInfo EI = (HTMLElementInfo)GetHTMLElementInfoFromPL(PL);
+                EI.WindowExplorer = this; 
                 list.Add(EI);
             }
             return list;
@@ -2626,8 +2643,8 @@ namespace GingerCore.Drivers.JavaDriverLib
                         ElementType = eElementType.Table,
                         ElementAction = ActUIElement.eElementAction.TableCellAction,
                     };
-                    actUIElementTable.GetOrCreateInputParam(ActUIElement.Fields.WhereColumnValue, column);
-                    actUIElementTable.GetOrCreateInputParam(ActUIElement.Fields.RowSelectorRadioParam, "RowNum");
+                    actUIElementTable.GetOrCreateInputParam(ActUIElement.Fields.WhereColumnValue, column);                    
+                    actUIElementTable.GetOrCreateInputParam(ActUIElement.Fields.LocateRowType, "Row Number");
                     actUIElementTable.GetOrCreateInputParam(ActUIElement.Fields.ColSelectorValue, ActUIElement.eTableElementRunColSelectorValue.ColNum.ToString());
                     actUIElementTable.GetOrCreateInputParam(ActUIElement.Fields.LocateColTitle, column);
                     actUIElementTable.GetOrCreateInputParam(ActUIElement.Fields.ControlAction, ActUIElement.eTableAction.DoubleClick.ToString());
@@ -2821,23 +2838,73 @@ namespace GingerCore.Drivers.JavaDriverLib
             }
         }
 
-        private ActGenElement GetHTMLAction(PayLoad pl)
+        private ActUIElement GetHTMLAction(PayLoad pl)
         {
-            ActGenElement act = new ActGenElement();
 
-            string LocateBy = pl.GetValueString();
-            string LocateValue = pl.GetValueString();
-            string ElemValue = pl.GetValueString();
-            string ControlAction = pl.GetValueString();
+            ActUIElement actUIElement = new ActUIElement();
+
+            string elementLocateBy = pl.GetValueString();
+            string elementLocateValue = pl.GetValueString();
+            string elementValue = pl.GetValueString();
+            string elementAction = pl.GetValueString();
             string Type = pl.GetValueString();
 
-            act.Description = SeleniumDriver.GetDescription(ControlAction, LocateValue, ElemValue, Type);
-            act.LocateBy = SeleniumDriver.GetLocateBy(LocateBy);
-            act.GenElementAction = SeleniumDriver.GetElemAction(ControlAction);
-            act.LocateValue = SeleniumDriver.GetLocatedValue(Type, LocateValue, ElemValue);
-            act.Value = ElemValue;
+            actUIElement.GetOrCreateInputParam(ActUIElement.Fields.IsWidgetsElement, "true");
 
-            return act;
+            actUIElement.ElementLocateBy = GetElementLocatBy(elementLocateBy);
+
+            if (Type.ToLower().Equals("radio"))
+            {
+                actUIElement.ElementLocateValue = elementValue;
+            }
+            else
+            {
+                actUIElement.ElementLocateValue = elementLocateValue;
+            }
+
+            actUIElement.GetOrCreateInputParam(ActUIElement.Fields.ElementAction, GetElementACtion(elementAction).ToString());
+
+            if (actUIElement.ElementLocateBy.Equals(eLocateBy.ByName) || actUIElement.ElementLocateBy.Equals(eLocateBy.ByID))
+            {
+                actUIElement.Description = string.Concat(elementAction, " ", elementLocateValue);
+            }
+            else
+            {
+                actUIElement.Description = string.Concat(elementAction, " ", Type.ToUpper());
+            }
+
+            
+            actUIElement.Value = elementValue;
+
+            actUIElement.GetOrCreateInputParam(ActUIElement.Fields.ValueToSelect, elementValue);
+
+            return actUIElement;
+        }
+
+        private ActUIElement.eElementAction GetElementACtion(string elementAction)
+        {
+            try
+            {
+                return (ActUIElement.eElementAction)Enum.Parse(typeof(ActUIElement.eElementAction), elementAction);
+            }
+            catch
+            {
+                return ActUIElement.eElementAction.Unknown;
+            }
+            
+        }
+
+        private eLocateBy GetElementLocatBy(string elementLocateBy)
+        {
+            try
+            {
+                return (eLocateBy)Enum.Parse(typeof(eLocateBy), elementLocateBy);
+            }
+            catch
+            {
+
+                return eLocateBy.NA;
+            }
         }
 
         private void CreateSwitchWindowAction(string windowTitle)

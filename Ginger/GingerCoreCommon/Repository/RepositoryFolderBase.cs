@@ -175,9 +175,7 @@ namespace Amdocs.Ginger.Repository
         /// </summary>
         /// <param name="repositoryFolder"></param>
         public abstract void MoveItem(RepositoryItemBase repositoryItem, RepositoryFolderBase repositoryFolder);
-
-        // private static ISourceControl SourceControl;
-
+        
         private eImageType? mSourceControlStatus = eImageType.Null;
 
         public eImageType? SourceControlStatus

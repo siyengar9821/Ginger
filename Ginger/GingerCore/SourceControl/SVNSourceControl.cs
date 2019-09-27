@@ -90,8 +90,7 @@ namespace GingerCore.SourceControl
         }
 
 
-        // Get Source Control one file info
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        // Get Source Control one file info        
         public override SourceControlFileInfo.eRepositoryItemStatus GetFileStatus(string Path, bool ShowIndicationkForLockedItems, ref string error)
         {            
             if (Path == null || Path.Length == 0) return SourceControlFileInfo.eRepositoryItemStatus.Unknown;
@@ -155,7 +154,7 @@ namespace GingerCore.SourceControl
             if (client == null) Init();
             ObservableList<SourceControlFileInfo> files = new ObservableList<SourceControlFileInfo>();
 
-            System.Collections.ObjectModel.Collection<SvnStatusEventArgs> statuses;
+            Collection<SvnStatusEventArgs> statuses;
             try
             {
                 lock (client)
@@ -184,9 +183,11 @@ namespace GingerCore.SourceControl
                     {
                         SCFI.Status = SourceControlFileInfo.eRepositoryItemStatus.Modified;
 
-                        // !!!!!!!!!!!!!!!!!!!!!!!!!! ?????????????????????
-                        //Task.Run(() =>
-                        //SCFI.Diff = Diff(arg.FullPath, arg.Uri));
+                        // Casuing perf issue is it really needed here?
+                        Task.Run(() =>
+                        {
+                            SCFI.Diff = Diff(arg.FullPath, arg.Uri);
+                        });
                     }
                     if (arg.LocalContentStatus == SvnStatus.NotVersioned)
                     {
@@ -238,8 +239,7 @@ namespace GingerCore.SourceControl
         }
 
 
-        // what is this method ?? called for expand
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        // what is this method ?? called for expand        
         private string Diff(string pSourcePath, Uri u)
         {
             return null;
@@ -271,8 +271,7 @@ namespace GingerCore.SourceControl
             }
         }
 
-        // Get all files in path recursive 
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        // Get all files in path recursive         
         public override bool GetLatest(string path, ref string error, ref List<string> conflictsPaths)
         {
             if (client == null) Init();
@@ -357,8 +356,7 @@ namespace GingerCore.SourceControl
             }
             return true;
         }
-
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        
         public override bool CommitChanges(ICollection<string> Paths, string Comments, ref string error, ref List<string> conflictsPaths, bool includLockedFiles = false)
         {
             //Commit Changes
@@ -419,8 +417,7 @@ namespace GingerCore.SourceControl
             }
             return true;
         }
-
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        
         public override void CleanUp(string Path)
         {
             if (client == null) Init();
@@ -434,7 +431,7 @@ namespace GingerCore.SourceControl
             }
         }
 
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        
         private Uri GetRemoteUriFromPath(string Path, out Collection<SvnListEventArgs> ListEventArgs)
         {
             try
@@ -460,7 +457,7 @@ namespace GingerCore.SourceControl
             }
         }
 
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        
         public override bool Lock(string Path, string lockComment, ref string error)
         {
             if (client == null)
@@ -487,7 +484,7 @@ namespace GingerCore.SourceControl
             return result;
         }
 
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        
         public override bool UnLock(string Path, ref string error)
         {
             if (client == null) Init();
@@ -542,7 +539,7 @@ namespace GingerCore.SourceControl
             mConflictsPaths.Add(e.MergedFile);
         }
 
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        
         public override bool ResolveConflicts(string Path, eResolveConflictsSide side, ref string error)
         {
             if (client == null) Init();
@@ -583,7 +580,7 @@ namespace GingerCore.SourceControl
             return true;
         }
 
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        
         public override bool Revert(string Path, ref string error)
         {
             if (client == null) Init();
@@ -789,7 +786,7 @@ namespace GingerCore.SourceControl
             return RemoteURL;
         }
 
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        
         public override SourceControlItemInfoDetails GetInfo(string path, ref string error)
         {
 
@@ -836,7 +833,7 @@ namespace GingerCore.SourceControl
             }
         }
 
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        
         public override string GetLockOwner(string path, ref string error)
         {
             if (client == null) Init();
@@ -854,7 +851,7 @@ namespace GingerCore.SourceControl
             }
         }
 
-        // [MethodImpl(MethodImplOptions.Synchronized)]
+        
         public override SourceControlItemInfoDetails GetRepositoryInfo(ref string error)
         {
             if (client == null) Init();

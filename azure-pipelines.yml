@@ -80,7 +80,7 @@ jobs:
 # Build with Apache Ant
   - task: Ant@1
     inputs:
-      buildFile: 'D:\a\1\s\Ginger\GingerCore\Drivers\JavaDriverLib\build.xml' 
+      buildFile: 'D:\a\1\s\Ginger\Ginger\GingerCore\Drivers\JavaDriverLib\build.xml' 
       #options: # Optional
       #targets: # Optional
       #publishJUnitResults: true 

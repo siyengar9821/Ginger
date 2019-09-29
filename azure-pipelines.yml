@@ -78,9 +78,11 @@ jobs:
 # ------------------------------------------------------------------------------------------------------
 # Ant
 # Build with Apache Ant
-  - task: Ant@1
-    inputs:
-      buildFile: 'D:\a\1\s\Ginger\GingerCore\Drivers\JavaDriverLib\GingerJavaAgent\build.xml' 
+#  - task: Ant@1
+#    inputs:
+#      buildFile: 'D:\a\1\s\Ginger\GingerCore\Drivers\JavaDriverLib\GingerJavaAgent\build.xml' 
+#    displayName: Build Ginger Java Driver using Ant
+
       #options: # Optional
       #targets: # Optional
       #publishJUnitResults: true 
@@ -96,7 +98,7 @@ jobs:
       #jdkVersionOption: 'default' # Optional. Options: default, 1.11, 1.10, 1.9, 1.8, 1.7, 1.6
       #jdkUserInputDirectory: # Required when javaHomeOption == Path
       #jdkArchitectureOption: 'x64' # Optional. Options: x86, x64
-    displayName: Build Ginger Java Driver using Ant
+
 
 
 # ------------------------------------------------------------------------------------------------------

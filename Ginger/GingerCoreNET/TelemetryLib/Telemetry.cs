@@ -187,9 +187,9 @@ namespace Amdocs.Ginger.CoreNET.TelemetryLib
 
         public void SessionStarted()
         {
-            if (WorkSpace.Instance.Telemetry.DoNotCollect)  return;
-
             mTelemetrySession = new TelemetrySession(Guid);
+
+            if (WorkSpace.Instance.Telemetry.DoNotCollect)  return;
 
             Add("sessionstart", mTelemetrySession);
 

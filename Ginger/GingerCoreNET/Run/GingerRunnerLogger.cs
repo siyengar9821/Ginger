@@ -20,9 +20,7 @@ using Amdocs.Ginger.Common.Actions;
 using Amdocs.Ginger.Common.InterfacesLib;
 using Amdocs.Ginger.CoreNET.GeneralLib;
 using Amdocs.Ginger.Repository;
-
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 

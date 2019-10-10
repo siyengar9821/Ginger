@@ -228,9 +228,16 @@ namespace Ginger.Reports
             reportConfiguraion.Description = string.Empty;
             using (var ms = new MemoryStream())
             {
-                string file = Ginger.Reports.GingerExecutionReport.ExtensionMethods.getGingerEXEFileName().Replace("Ginger.exe", @"Images\@amdocs_logo.jpg");
-                Bitmap bitmap = new Bitmap(file);
-                reportConfiguraion.LogoBase64Image = BitmapToBase64(bitmap);
+                string file = Ginger.Reports.GingerExecutionReport.ExtensionMethods.getGingerEXEFileName().Replace("Ginger.exe", @"Images" + Path.DirectorySeparatorChar + "@amdocs_logo.jpg");
+                if (File.Exists(file))
+                {
+                    Bitmap bitmap = new Bitmap(file);
+                    reportConfiguraion.LogoBase64Image = BitmapToBase64(bitmap);
+                }
+                else
+                {
+                    Reporter.ToLog( eLogLevel.ERROR, "Missing image file: " + file);
+                }
             }
         }
 

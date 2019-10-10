@@ -154,6 +154,21 @@ namespace Ginger.Run.RunSetActions
 
         public override void Execute(ReportInfo RI)
         {
+            // TODO: make this method short and break to sub functions like below
+            //Email email = new Email();
+            //email.Subject = Subject;
+            //email.Body = GetBody();
+            //email.MailFrom = ;
+            //email.MailTo = ;
+            //email.SMTPMailHost = ;
+            //email.SMTPPort = 587;
+            //email.EnableSSL = true;
+            //email.SMTPUser = ;
+            //email.SMTPPass = ;
+            //email.ConfigureCredential = true;
+            //email.Send_SMTP();
+            
+
             //Reporter.ToLog(eLogLevel.DEBUG, "Run set operation send Email Staring execute");
             mValueExpression = new ValueExpression(WorkSpace.Instance.RunsetExecutor.RunsetExecutionEnvironment, null, WorkSpace.Instance.SolutionRepository.GetAllRepositoryItems<DataSourceBase>(), false, "", false);
             string extraInformationCalculated = string.Empty;
@@ -172,12 +187,18 @@ namespace Ginger.Run.RunSetActions
             }
 
             tempFolder = WorkSpace.Instance.ReportsInfo.EmailReportTempFolder;
+            
+            TemplatesFolder = ExtensionMethods.GingerExecutionReport;                         
 
-            // !!!!!!!!!!!!!!!!!!! Linux
-            TemplatesFolder = Path.Combine(ExtensionMethods.getGingerEXEFileName(), "Reports", "GingerExecutionReport").Replace("Ginger.exe", "");
-
-            //Reporter.ToLog(eLogLevel.DEBUG, "Run set operation send Email: TemplatesFolder=" + TemplatesFolder);
-
+            if (Directory.Exists(TemplatesFolder))
+            {
+                Reporter.ToConsole(eLogLevel.INFO, "Reports Templates Folder=" + TemplatesFolder);                
+            }
+            else
+            {
+                Reporter.ToConsole(eLogLevel.ERROR, "Report Templates Folder not found: " + TemplatesFolder);
+            }
+            
             string runSetFolder = string.Empty;
             if (WorkSpace.Instance.RunsetExecutor.RunSetConfig.LastRunsetLoggerFolder != null)
             {
@@ -409,30 +430,32 @@ namespace Ginger.Run.RunSetActions
                     alternativeView.ContentId = "htmlView";
                     alternativeView.TransferEncoding = TransferEncoding.SevenBit;
                     string beatLogoPath = Path.Combine(TemplatesFolder, "assets", "img", "@BeatLogo.png");
-                    string gingerLogoPath = Path.Combine(TemplatesFolder, "assets", "img", "@Ginger.png");
-                    string customerLogoPath = Path.Combine(TemplatesFolder, "assets", "img", "@Ginger.png");
+                    string gingerLogoPath = Path.Combine(TemplatesFolder, "assets", "img", "@Ginger.png");  // bad image !? not working ion Linux weird...
+                    
+                   
+                    string customerLogoPath = Path.Combine(TemplatesFolder, "assets", "img", "@Ginger.png");  // FIXME!!!
 
 
                     if (File.Exists(beatLogoPath))
-                        alternativeView.LinkedResources.Add(GetLinkedResource(GetImageStream(beatLogoPath), "beat"));
+                        alternativeView.LinkedResources.Add(GetLinkedResource(beatLogoPath, "beat"));
                     if (File.Exists(gingerLogoPath))
-                        alternativeView.LinkedResources.Add(GetLinkedResource(GetImageStream(gingerLogoPath), "ginger"));
+                        alternativeView.LinkedResources.Add(GetLinkedResource(gingerLogoPath, "ginger"));
                     if (File.Exists(customerLogoPath))
-                        alternativeView.LinkedResources.Add(GetLinkedResource(GetImageStream(customerLogoPath), "customer"));
+                        alternativeView.LinkedResources.Add(GetLinkedResource(customerLogoPath, "customer"));
                     if (!string.IsNullOrEmpty(Comments))
                     {
-                        alternativeView.LinkedResources.Add(GetLinkedResource(GetImageStream(Path.Combine(TemplatesFolder, "assets", "img", "comments-icon.jpg")), "comment"));
+                        alternativeView.LinkedResources.Add(GetLinkedResource(Path.Combine(TemplatesFolder, "assets", "img", "comments-icon.jpg"), "comment"));
                     }
                     if (IsExecutionStatistic)
                     {
                         if (File.Exists(Path.Combine(tempFolder, $"GingerRunner{reportTimeStamp}.jpeg")))
-                            alternativeView.LinkedResources.Add(GetLinkedResource(GetImageStream(Path.Combine(tempFolder,$"GingerRunner{reportTimeStamp}.jpeg")), "gingerRunner" + reportTimeStamp));
+                            alternativeView.LinkedResources.Add(GetLinkedResource(Path.Combine(tempFolder,$"GingerRunner{reportTimeStamp}.jpeg"), "gingerRunner" + reportTimeStamp));
                         if (File.Exists(Path.Combine(tempFolder, $"Action{reportTimeStamp}.jpeg")))
-                            alternativeView.LinkedResources.Add(GetLinkedResource(GetImageStream(Path.Combine(tempFolder, $"Action{reportTimeStamp}.jpeg")), "Action" + reportTimeStamp));
+                            alternativeView.LinkedResources.Add(GetLinkedResource(Path.Combine(tempFolder, $"Action{reportTimeStamp}.jpeg"), "Action" + reportTimeStamp));
                         if (File.Exists(Path.Combine(tempFolder, $"Activity{reportTimeStamp}.jpeg")))
-                            alternativeView.LinkedResources.Add(GetLinkedResource(GetImageStream(Path.Combine(tempFolder, $"Activity{reportTimeStamp}.jpeg")),"Activity" + reportTimeStamp));
+                            alternativeView.LinkedResources.Add(GetLinkedResource(Path.Combine(tempFolder, $"Activity{reportTimeStamp}.jpeg"),"Activity" + reportTimeStamp));
                         if (File.Exists(Path.Combine(tempFolder, $"Businessflow{reportTimeStamp}.jpeg")))
-                            alternativeView.LinkedResources.Add(GetLinkedResource(GetImageStream(Path.Combine(tempFolder, $"Businessflow{reportTimeStamp}.jpeg")), "Businessflow" + reportTimeStamp));
+                            alternativeView.LinkedResources.Add(GetLinkedResource(Path.Combine(tempFolder, $"Businessflow{reportTimeStamp}.jpeg"), "Businessflow" + reportTimeStamp));
                     }
                     Email.alternateView = alternativeView;
                 }
@@ -488,6 +511,78 @@ namespace Ginger.Run.RunSetActions
                 Status = eRunSetActionStatus.Failed;
             }
         }
+
+      
+        // TODO: use something like below to create body, or get template
+        //String CreateBody(ReportInfo RI)
+        //{
+        //    string body = @"<html>
+        //                  <body>
+        //                    <table width=""100%"">
+        //                    <tr>
+        //                        <td style=""font-style:arial; color:maroon; font-weight:bold"">
+        //                                ~~~DateCreated~~~ 
+        //                           <br>
+        //                                ~~~BusinessFlows~~~ 
+        //                           <br>
+        //                        <img src=cid:myImageID>
+        //                        </td>
+        //                    </tr>
+        //                    </table>
+        //                    </body>
+        //                    </html>";
+
+        //    body = body.Replace("~~~DateCreated~~~", "Date Created:" + RI.DateCreated);
+        //    body = body.Replace("~~~BusinessFlows~~~", "Total Business Flows: " + RI.TotalBusinessFlows);
+        //    return body;
+        //}
+
+            // Sample send emial with email which works on Linux
+        //private void SendEmailWithimage(ReportInfo RI)
+        //{
+        //    string body = CreateBody(RI);
+            
+
+        //    var smtpClient = new SmtpClient
+        //    {
+        //        Host = "cmimail", // set your SMTP server name here
+        //        Port = 587, // Port 
+        //        EnableSsl = true,
+        //    };
+
+            
+        //    // or
+        //    var cred = new NetworkCredential("yaronwe", "********", "ntnet");            
+        //    var cache = new CredentialCache();            
+        //    cache.Add("cmimail", 587, "LOGIN", cred);
+        //    smtpClient.Credentials = cache;
+
+            
+        //    string gingerLogoPath = Path.Combine(ExtensionMethods.GingerExecutionReport, "assets", "img", "@Ginger_old.png"); 
+
+        //    AlternateView htmlView = AlternateView.CreateAlternateViewFromString(body, null, "text/html");
+        //    LinkedResource theEmailImage = new LinkedResource(gingerLogoPath);
+        //    // LinkedResource theEmailImage = new LinkedResource(@"image001.png");
+            
+        //    theEmailImage.ContentId = "myImageID";
+
+        //    //Add the Image to the Alternate view
+        //    htmlView.LinkedResources.Add(theEmailImage);
+
+
+        //    //set the "from email" address 
+
+        //    using (var message = new MailMessage("yaron.weiss@amdocs.com", "yaron.weiss@amdocs.com")
+        //    {
+        //        Subject = Subject + " - ccc",
+        //        Body = body,
+        //        IsBodyHtml = true,
+        //    })
+        //    {
+        //        message.AlternateViews.Add(htmlView);
+        //        smtpClient.SendMailAsync(message).Wait();
+        //    }
+        //}
 
         private void SetReportInfoFromLiteDb(ReportInfo reportInfoLiteDb, LiteDbRunSet liteDbRunSet)
         {
@@ -1163,37 +1258,56 @@ namespace Ginger.Run.RunSetActions
         {
             RepositoryItemHelper.RepositoryItemFactory.CreateChart(y, chartName, Title, tempFolder);
         }
-        public LinkedResource GetLinkedResource(byte[] imageBytes, string id)
+        public LinkedResource GetLinkedResource(string fileName, string id)
         {
-            ContentType c = new ContentType("image/png");
-            LinkedResource linkedResource = new LinkedResource(new MemoryStream(imageBytes));
-            linkedResource.ContentType = c;
-            linkedResource.ContentId = id;
-            linkedResource.TransferEncoding = TransferEncoding.Base64;
-            return linkedResource;
-        }
-        public byte[] GetImageStream(string path)
-        {
-            byte[] arr=new byte[0];
-            if (!File.Exists(path))
+            if (File.Exists(fileName))
             {
+                Reporter.ToLog(eLogLevel.DEBUG, "Adding Linked Resource to Email: '" + id + "' fileName: '" + fileName + "'");
+                //ContentType c = new ContentType("image/png");
+                LinkedResource linkedResource = new LinkedResource(fileName);
+                //linkedResource.ContentType = c;
+                linkedResource.ContentId = id;
+                //linkedResource.TransferEncoding = TransferEncoding.Base64;
+                return linkedResource;
+            }
+            else
+            {
+                Reporter.ToLog(eLogLevel.ERROR, "Adding Linked Resource to Email Fail because of missing file: '" + id + "' fileName: '" + fileName + "'");
                 return null;
             }
-            try
-            {
-                System.Drawing.Image img = System.Drawing.Image.FromFile(path);
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    arr = ms.ToArray();
-                }
-            }
-            catch(Exception ex)
-            {
-                Reporter.ToLog(eLogLevel.WARN, "Error in GetImageStream", ex);
-            }
-            return arr;
         }
+
+        // TODO: move to generic image processing/converting class
+        //public byte[] GetImageStream(string path)
+        //{   
+            
+        //    // byte[] arr=new byte[0];
+        //    if (!File.Exists(path))
+        //    {
+        //        Reporter.ToLog(eLogLevel.ERROR, "Error in GetImageStream file not found: " + path);
+        //        return null;
+        //    }
+        //    try
+        //    {
+                
+        //        Reporter.ToConsole(eLogLevel.INFO, "----------------- 1 ------------------------");
+        //        // arr = File.ReadAllBytes(path);
+        //        //System.Drawing.Image img = System.Drawing.Image.FromFile(path);
+        //        //Reporter.ToConsole(eLogLevel.INFO, "----------------- 2 ------------------------");
+        //        //using (MemoryStream ms = new MemoryStream())
+        //        //{
+        //        //    img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+        //        //    Reporter.ToConsole(eLogLevel.INFO, "----------------- 3 ------------------------");
+        //        //    arr = ms.ToArray();
+        //        //    Reporter.ToConsole(eLogLevel.INFO, "----------------- 4 ------------------------");
+        //        //}
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        Reporter.ToLog(eLogLevel.WARN, "Error in GetImageStream for file: " + path, ex);
+        //    }
+        //    return arr;
+        //}
         //TODO: Move the Zipit function to Email.Addattach function
         void AddAttachmentToEmail(Email e, string FileName, bool ZipIt, EmailAttachment.eAttachmentType AttachmentType)
         {

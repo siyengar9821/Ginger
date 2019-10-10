@@ -37,6 +37,7 @@ namespace Ginger.Run.RunSetActions
             xSMTPMailHostTextBox.Init(context, email, nameof(Email.SMTPMailHost));
             BindingHandler.ObjFieldBinding(xSMTPPortTextBox, TextBox.TextProperty, email, nameof(Email.SMTPPort));
             xSMTPUserTextBox.Init(context, email, nameof(Email.SMTPUser));
+            xSMTPUserDomainTextBox.Init(context, email, nameof(Email.SMTPUserDomain));
             BindingHandler.ObjFieldBinding(xSMTPPassTextBox, TextBox.TextProperty, email, nameof(Email.SMTPPass));
             GingerCore.General.FillComboFromEnumObj(xEmailMethodComboBox, email.EmailMethod);
             BindingHandler.ObjFieldBinding(xEmailMethodComboBox, ComboBox.SelectedValueProperty, email, nameof(Email.EmailMethod));
@@ -57,16 +58,20 @@ namespace Ginger.Run.RunSetActions
         private void xcbConfigureCredential_Checked(object sender, RoutedEventArgs e)
         {
             xSMTPUserTextBox.Visibility = Visibility.Visible;
+            xSMTPUserDomainTextBox.Visibility = Visibility.Visible;
             xSMTPPassTextBox.Visibility = Visibility.Visible;
             xLabelPass.Visibility = Visibility.Visible;
             xLabelUser.Visibility = Visibility.Visible;
+            xLabelUserDomain.Visibility = Visibility.Visible;
         }
         private void xcbConfigureCredential_Unchecked(object sender, RoutedEventArgs e)
         {
             xSMTPUserTextBox.Visibility = Visibility.Collapsed;
+            xSMTPUserDomainTextBox.Visibility = Visibility.Collapsed;
             xSMTPPassTextBox.Visibility = Visibility.Collapsed;
             xLabelPass.Visibility = Visibility.Collapsed;
             xLabelUser.Visibility = Visibility.Collapsed;
+            xLabelUserDomain.Visibility = Visibility.Collapsed;
         }
         private void xSMTPPassTextBox_LostFocus(object sender, RoutedEventArgs e)
         {

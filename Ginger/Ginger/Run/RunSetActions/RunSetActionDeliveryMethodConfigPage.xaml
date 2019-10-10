@@ -31,6 +31,8 @@
                     </DockPanel>
                     <Label Style="{StaticResource @LabelStyle}" x:Name="xLabelUser" Visibility="Collapsed">SMTP User:</Label>
                     <Actions:UCValueExpression x:Name="xSMTPUserTextBox"  ToolTip="SMTP User" Width="235" HorizontalAlignment="Left" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                    <Label Style="{StaticResource @LabelStyle}" x:Name="xLabelUserDomain" Visibility="Collapsed">SMTP User Domain:</Label>
+                    <Actions:UCValueExpression x:Name="xSMTPUserDomainTextBox"  ToolTip="SMTP User Domain" Width="235" HorizontalAlignment="Left" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Auto" />
                     <Label Style="{StaticResource @LabelStyle}" x:Name="xLabelPass" Visibility="Collapsed">SMTP Password:</Label>
                     <TextBox x:Name="xSMTPPassTextBox" Style="{StaticResource @TextBoxStyle}" Width="235" HorizontalAlignment="Left" Visibility="Collapsed" LostFocus="xSMTPPassTextBox_LostFocus"/>
                 </StackPanel>

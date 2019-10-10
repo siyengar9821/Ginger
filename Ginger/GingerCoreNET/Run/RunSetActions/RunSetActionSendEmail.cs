@@ -18,8 +18,6 @@ limitations under the License.
 
 using amdocs.ginger.GingerCoreNET;
 using Amdocs.Ginger.Common;
-using Amdocs.Ginger.Common.GeneralLib;
-using Amdocs.Ginger.Common.InterfacesLib;
 using Amdocs.Ginger.Repository;
 using Ginger.Reports;
 using Ginger.Reports.HTMLReports;
@@ -28,7 +26,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Text;
 
 namespace Ginger.Run.RunSetActions
 {

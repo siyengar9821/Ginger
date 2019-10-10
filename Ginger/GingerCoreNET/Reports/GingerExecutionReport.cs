@@ -2633,9 +2633,8 @@ namespace Ginger.Reports.GingerExecutionReport
 
         public static string CreateGingerExecutionReport(ReportInfo RI, bool calledFromAutomateTab = false, HTMLReportConfiguration SelectedHTMLReportConfiguration = null, string mHTMLReportsFolder = null, bool isHTMLReportPermanentFolderNameUsed = false, long maxFolderSize = 0)
         {
-            GingerExecutionReport gingerExecutionReport = new GingerExecutionReport();
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!! use path combine
-            gingerExecutionReport.TemplatesFolder = (ExtensionMethods.getGingerEXEFileName() + @"Reports\GingerExecutionReport\").Replace("Ginger.exe", "");
+            GingerExecutionReport gingerExecutionReport = new GingerExecutionReport();            
+            gingerExecutionReport.TemplatesFolder = GingerExecutionReport; 
 
             if (SelectedHTMLReportConfiguration != null)
             {
@@ -2829,10 +2828,21 @@ namespace Ginger.Reports.GingerExecutionReport
             return gingerExecutionReport.HTMLReportMainFolder;
         }
 
+        public static string GingerExecutionReport
+        {
+            get
+            {
+                // Linux !!!!!!!!!!!!!!!!!
+                string s = (ExtensionMethods.getGingerEXEFileName() + @"Reports" + Path.DirectorySeparatorChar + "GingerExecutionReport" + Path.DirectorySeparatorChar).Replace("Ginger.exe", "");
+                Reporter.ToConsole(eLogLevel.INFO, "GingerExecutionReport=" + s);
+                return s;
+            }
+        }
+
         public static string CreateActivitiesGroupReportsOfBusinessFlow(ProjEnvironment environment, BusinessFlow BF, bool calledFromAutomateTab = false, HTMLReportConfiguration SelectedHTMLReportConfiguration = null, string mHTMLReportsFolder = null)
         {
             Ginger.Reports.GingerExecutionReport.GingerExecutionReport l = new Ginger.Reports.GingerExecutionReport.GingerExecutionReport();
-            l.TemplatesFolder = (ExtensionMethods.getGingerEXEFileName() + @"Reports\GingerExecutionReport\").Replace("Ginger.exe", "");
+            l.TemplatesFolder = GingerExecutionReport; 
 
             if (SelectedHTMLReportConfiguration != null)
             {

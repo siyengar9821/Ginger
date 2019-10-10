@@ -26,7 +26,7 @@ using System.Net;
 using System.Net.Mail;
 
 namespace GingerCore.GeneralLib
-{    
+{
 
     public class Email : RepositoryItemBase
     { 
@@ -170,6 +170,12 @@ namespace GingerCore.GeneralLib
         [IsSerializedForLocalRepository]
         public string SMTPUser { get { return mSMTPUser; } set { if (mSMTPUser != value) { mSMTPUser = value; OnPropertyChanged(nameof(SMTPUser)); } } }
 
+        private string mSMTPUserDomain;
+        [IsSerializedForLocalRepository]
+        public string SMTPUserDomain { get { return mSMTPUserDomain; } set { if (mSMTPUserDomain != value) { mSMTPUserDomain = value; OnPropertyChanged(nameof(SMTPUserDomain)); } } }
+
+
+
         private string mSMTPPass;
         [IsSerializedForLocalRepository]
         public string SMTPPass { get { return mSMTPPass; } set { if (mSMTPPass != value) { mSMTPPass = value; OnPropertyChanged(nameof(SMTPPass)); } } }
@@ -256,7 +262,7 @@ namespace GingerCore.GeneralLib
         public bool Send_SMTP()
         {
             try
-            {
+            {                
                 if (string.IsNullOrEmpty(MailFrom))
                 {
                     Event = "Failed: Please provide FROM email address.";
@@ -285,34 +291,46 @@ namespace GingerCore.GeneralLib
                 string mailHost = mVE.ValueCalculated;
 
                 if (this.SMTPPort == 0 || this.SMTPPort == null)
-                    this.SMTPPort = 25;
+                {
+                    this.SMTPPort = 587; // email client to email server communication - 25 is old
+                }
+
                 var smtp = new SmtpClient()
                 {
-                    Host = mailHost,  // amdocs config              
+                    Host = mailHost,
                     Port = (int)this.SMTPPort,
                     EnableSsl = EnableSSL,
                     DeliveryMethod = SmtpDeliveryMethod.Network,
                     UseDefaultCredentials = !ConfigureCredential
                 };
-
                 if (ConfigureCredential)
                 {
                     bool checkValueDecrypt;
                     checkValueDecrypt = true;
-                    string DecryptPass = EncryptionHandler.DecryptString(SMTPPass, ref checkValueDecrypt);
+
+                    string pass;
                     if (checkValueDecrypt)
                     {
-                        smtp.Credentials = new NetworkCredential(SMTPUser, DecryptPass);
+                        pass = EncryptionHandler.DecryptString(SMTPPass, ref checkValueDecrypt);                        
                     }
                     else
                     {
-                        smtp.Credentials = new NetworkCredential(SMTPUser, SMTPPass);
+                        pass = SMTPPass;
                     }
+                    
+                    var cred = new NetworkCredential(mSMTPUser, pass, mSMTPUserDomain);  
+                    var cache = new CredentialCache();
+
+                    
+                    cache.Add(mailHost, smtp.Port, "LOGIN", cred);
+                    smtp.Credentials = cache;
+
+
                 }
                 mVE.Value = MailTo;
                 string emails = mVE.ValueCalculated;
                 Array arrEmails = emails.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                System.Net.Mail.MailMessage myMail = new System.Net.Mail.MailMessage();
+                MailMessage myMail = new MailMessage();
                 foreach (string email in arrEmails)
                 {
                     myMail.To.Add(email);
@@ -352,7 +370,7 @@ namespace GingerCore.GeneralLib
                 {
                     myMail.AlternateViews.Add(alternateView);
                 }
-                
+               
                 smtp.Send(myMail);
 
                 return true;
@@ -375,7 +393,7 @@ namespace GingerCore.GeneralLib
                 {
                     Event = "Failed: " + ex.Message;
                 }
-                Reporter.ToLog(eLogLevel.DEBUG, "Failed to send mail", ex);
+                Reporter.ToLog(eLogLevel.ERROR, "Failed to send mail", ex);
 
                 return false;
             }

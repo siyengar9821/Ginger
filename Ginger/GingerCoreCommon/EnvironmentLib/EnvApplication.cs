@@ -16,11 +16,10 @@ limitations under the License.
 */
 #endregion
 
-using Amdocs.Ginger.Repository;
-using Amdocs.Ginger.Common;
 using System.Linq;
+using Amdocs.Ginger.Common;
 using Amdocs.Ginger.Common.Enums;
-using Amdocs.Ginger.Plugin.Core.Database;
+using Amdocs.Ginger.Repository;
 
 namespace GingerCore.Environments
 {

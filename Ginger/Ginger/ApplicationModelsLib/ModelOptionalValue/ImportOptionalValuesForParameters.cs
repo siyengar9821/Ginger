@@ -1474,7 +1474,7 @@ namespace Ginger.ApplicationModelsLib.ModelOptionalValue
         public void ExecuteFreeSQL(string command)
         {
             // TODO: Check if working fine
-            DataTable dataTable = db.QueryDatabase(command);
+            object result = db.ExecuteQuery(command);
             //SQLResult = db.FreeSQL(command);
         }
         public List<ParameterValues> UpdateParametersOptionalValuesFromDB()

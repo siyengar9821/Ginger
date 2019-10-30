@@ -365,9 +365,9 @@ namespace GingerCore.Actions
 
                 if (string.IsNullOrEmpty(SQL))
                     Error = "Fail to run Update SQL: " + Environment.NewLine + SQL + Environment.NewLine + "Error = Missing Query";
-               
-                string val = DB.UpdateDB(SQL, CommitDB_Value);
-                    this.AddOrUpdateReturnParamActual("Impacted Lines", val);
+
+                string val = (string)DB.ExecuteQuery(SQL);  //UpdateDB(SQL);  // ExecuteQuery
+                this.AddOrUpdateReturnParamActual("Impacted Lines", val);
                 
             }
             catch (Exception e)
@@ -419,7 +419,7 @@ namespace GingerCore.Actions
                 foreach (ActInputValue param in QueryParams)
                     SQL = SQL.Replace("<<" + param.ItemName + ">>", param.ValueForDriver);
 
-                DataTable DBResponse = DB.QueryDatabase(SQL, queryTimeout);
+                DataTable DBResponse = (DataTable)DB.ExecuteQuery(SQL);
 
                 int row = 0;
                 int col = 0;
@@ -516,7 +516,7 @@ namespace GingerCore.Actions
             switch (DBValidationType)
             {
                 case eDBValidationType.FreeSQL:                    
-                    DBResponse = DB.QueryDatabase(SQL, 1000);                    
+                    DBResponse = (DataTable)DB.ExecuteQuery(SQL);
                     break;
                 case eDBValidationType.SimpleSQLOneValue:
                     string value = GetSingleValue();
@@ -531,7 +531,7 @@ namespace GingerCore.Actions
                     DBResponse.Rows.Add(new string[] { count });
                     break;
                 case eDBValidationType.UpdateDB:
-                    string rc = DB.UpdateDB(SQL, false); //  .FreeSQL(SQL, 1000);
+                    string rc = (string)DB.ExecuteQuery(SQL); 
                     // TODO: fix me
                     break;
             }

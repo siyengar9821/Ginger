@@ -22,7 +22,6 @@ using System.Linq;
 using Amdocs.Ginger.Common;
 using Amdocs.Ginger.Common.Enums;
 using Amdocs.Ginger.Common.Repository;
-using Amdocs.Ginger.Plugin.Core.Database;
 using Amdocs.Ginger.Repository;
 
 namespace GingerCore.Environments

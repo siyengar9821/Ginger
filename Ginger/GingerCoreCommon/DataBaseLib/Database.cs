@@ -20,11 +20,10 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
 using Amdocs.Ginger.Common;
 using Amdocs.Ginger.Common.DataBaseLib;
-using Amdocs.Ginger.Plugin.Core.Database;
+using Amdocs.Ginger.Plugin.Core.DatabaseLib;
 using Amdocs.Ginger.Repository;
 using GingerCore.DataSource;
 
@@ -32,8 +31,9 @@ namespace GingerCore.Environments
 {
     public class Database : RepositoryItemBase 
     {
-        IDatabase databaseImpl;
+        IDatabase mDatabaseImpl;
 
+        ISQLDatabase mSQLDatabaseImpl { get { return (ISQLDatabase)mDatabaseImpl; } }
 
         // TODO: change to Service ID
 
@@ -122,7 +122,7 @@ namespace GingerCore.Environments
 
                 if (mDBType != value)
                 {
-                    databaseImpl = null;
+                    mDatabaseImpl = null;
                     mDBType = value;
                     OnPropertyChanged(nameof(DBType));
 
@@ -272,10 +272,10 @@ namespace GingerCore.Environments
         public Boolean TestConnection()
         {
             VerifyDBImpl();
-            bool b = databaseImpl.OpenConnection();
+            bool b = mDatabaseImpl.OpenConnection();
             if (b)
             {
-                databaseImpl.CloseConnection();
+                mDatabaseImpl.CloseConnection();
             }
             return b;
         }
@@ -284,7 +284,7 @@ namespace GingerCore.Environments
 
         void VerifyDBImpl()
         {
-            if (databaseImpl != null) 
+            if (mDatabaseImpl != null) 
             {
                 return;
             };  //TODO: Add check that the db is as DBType else replace or any prop change then reset conn string
@@ -295,16 +295,16 @@ namespace GingerCore.Environments
                 throw new ArgumentNullException("iDBProvider cannot be null and must be initialized");
             }
             
-            databaseImpl = iDBProvider.GetDBImpl(this);
+            mDatabaseImpl = iDBProvider.GetDBImpl(this);
             // databaseImpl.ConnectionString = ConnectionString; 
         }
 
         public Boolean Connect(bool displayErrorPopup = false)
         {
             VerifyDBImpl();
-            if (databaseImpl != null)
+            if (mDatabaseImpl != null)
             {
-                return databaseImpl.OpenConnection(); 
+                return mDatabaseImpl.OpenConnection(); 
             }
             else
             {
@@ -317,7 +317,7 @@ namespace GingerCore.Environments
         {
             try
             {
-                databaseImpl.CloseConnection();                
+                mDatabaseImpl.CloseConnection();                
             }
             catch (Exception e)
             {
@@ -331,46 +331,50 @@ namespace GingerCore.Environments
         public List<string> GetTablesList(string Keyspace = null)
         {
             VerifyDBImpl();
-            return databaseImpl.GetTablesList();
+            return mSQLDatabaseImpl.GetTablesList();
         }
 
 
         public List<string> GetTablesColumns(string table)
         {
             VerifyDBImpl();
-            return databaseImpl.GetTablesColumns(table);            
+            return mSQLDatabaseImpl.GetTablesColumns(table);            
         }
-        
-        public string UpdateDB(string updateCmd, bool commit)
+
+        public object UpdateDB(string updateCmd, bool commit)   // commit !???
         {
             VerifyDBImpl();
-            string dataTable = databaseImpl.RunUpdateCommand(updateCmd, commit);
-            return dataTable;            
+            object result = mDatabaseImpl.ExecuteQuery(updateCmd);
+            return result;            
         }
 
-        public string GetSingleValue(string Table, string Column, string Where)
+        // For SQL database
+        public string GetSingleValue(string table, string column, string where)
         {
             VerifyDBImpl();
-            string value = databaseImpl.GetSingleValue(Table, Column, Where);  
-            return value;            
+
+            string sql = $"SELECT {column} FROM {table} WHERE {where}";
+            DataTable dataTable = (DataTable)mDatabaseImpl.ExecuteQuery(sql);
+            return dataTable.Rows[0][0].ToString();
         }
 
 
-        public DataTable QueryDatabase(string query, int? timeout=null)
+        public object ExecuteQuery(string query)
         {            
             VerifyDBImpl();
-            DataTable dataTable = databaseImpl.DBQuery(query);
-            return dataTable;           
+            object result = mDatabaseImpl.ExecuteQuery(query);
+            return result;           
         }
 
-
+        // For SQL database
         internal Int64 GetRecordCount(string query)
         {
             VerifyDBImpl();
-            Int64 count = databaseImpl.GetRecordCount(query);
-            return count;
+            string sql = $"SELECT COUNT(1) FROM {query}";
+            DataTable dataTable = (DataTable)mDatabaseImpl.ExecuteQuery(sql);
+            return (Int64)dataTable.Rows[0][0];
         }
-       
+
 
         public override string ItemName
         {

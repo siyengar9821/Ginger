@@ -58,15 +58,6 @@ namespace Ginger.Run.RunSetActions
         public string SaveResultsInSolutionFolderName { get; set; }
 
         [IsSerializedForLocalRepository]
-        public string SaveResultstoFolderName { get; set; }
-
-        [IsSerializedForLocalRepository]
-        public bool OpenExecutionResultsFolder { get; set; }
-
-        [IsSerializedForLocalRepository]
-        public bool SaveindividualBFReport { get; set; }
-
-        [IsSerializedForLocalRepository]
         public bool IsStatusByActivitiesGroup { get; set; }
 
         private bool isStatusByActivity = true;
@@ -110,7 +101,7 @@ namespace Ginger.Run.RunSetActions
             if (DynamicParameters.Count > 0)
             {
                 ValueExpression VE = new ValueExpression(RI.Environment, null);
-                for(int i = 0;i< DynamicParameters.Count ; i++)
+                for (int i = 0; i < DynamicParameters.Count; i++)
                 {
                     DynamicParameters[i].ValueForDriver = VE.Calculate(DynamicParameters[i].Value);
                 }
@@ -119,7 +110,7 @@ namespace Ginger.Run.RunSetActions
             string xml = TNGReport.CreateReport(RI, statusByGroupActivity, DynamicParameters);
 
             System.IO.File.WriteAllLines(folder + @"\testng-results.xml", new string[] { xml });
-        //TODO: let the user select file prefix
+            //TODO: let the user select file prefix
         }
 
         public override string GetEditPage()
@@ -134,5 +125,17 @@ namespace Ginger.Run.RunSetActions
         }
 
         public override string Type { get { return "Produce TestNG Summary Report"; } }
+
+        public override bool SerializationError(SerializationErrorType errorType, string name, string value)
+        {
+            if (errorType == SerializationErrorType.PropertyNotFound)
+            {
+                if (name == "SaveResultstoFolderName" || name == "OpenExecutionResultsFolder" || name == "SaveindividualBFReport")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

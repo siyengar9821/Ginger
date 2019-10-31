@@ -21,8 +21,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using Amdocs.Ginger.Common;
 using Amdocs.Ginger.Common.DataBaseLib;
+using Amdocs.Ginger.Plugin.Core;
 using Amdocs.Ginger.Plugin.Core.DatabaseLib;
 using Amdocs.Ginger.Repository;
 using GingerCore.DataSource;
@@ -106,6 +108,9 @@ namespace GingerCore.Environments
         public string ServiceID { get { return mServiceID; } set { mServiceID = value; OnPropertyChanged(nameof(ServiceID)); } }
 
 
+        [IsSerializedForLocalRepository]
+        public ObservableList<DatabaseParam> DBParmas { get; set; } = new ObservableList<DatabaseParam>();
+        
 
         // TODO: Obsolete remove after moving to DB pluguins
         public eDBTypes mDBType;
@@ -284,10 +289,14 @@ namespace GingerCore.Environments
 
         void VerifyDBImpl()
         {
+            UpdateDBImplFromParams();
+
             if (mDatabaseImpl != null) 
             {
                 return;
-            };  //TODO: Add check that the db is as DBType else replace or any prop change then reset conn string
+            }
+            
+            //TODO: Add check that the db is as DBType else replace or any prop change then reset conn string
 
 
             if (iDBProvider == null)
@@ -296,7 +305,50 @@ namespace GingerCore.Environments
             }
             
             mDatabaseImpl = iDBProvider.GetDBImpl(this);
-            // databaseImpl.ConnectionString = ConnectionString; 
+            UpdateDBParamsFromDBImpl();
+        }
+
+        private void UpdateDBParamsFromDBImpl()
+        {
+            PropertyInfo[] properties = mDatabaseImpl.GetType().GetProperties();
+            foreach (PropertyInfo propertyInfo in properties)
+            {
+                DatabaseParamAttribute attr = (DatabaseParamAttribute)propertyInfo.GetCustomAttribute(typeof(DatabaseParamAttribute));
+                if (attr != null)
+                {
+                    // Add only missing params, will happen when Database is first created
+                    DatabaseParam databaseParam = (from x in DBParmas where x.Name == attr.Param select x).SingleOrDefault();
+                    if (databaseParam == null)
+                    {
+                        // TODO: get default value !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        DBParmas.Add(new DatabaseParam() { Name = propertyInfo.Name });
+                    }
+                    else
+                    {
+                        // Update impl
+                    }
+                }
+            }
+        }
+
+        private void UpdateDBImplFromParams()
+        {
+            // Update params using reflection
+            foreach (DatabaseParam databaseParam in DBParmas)
+            {
+                PropertyInfo propertyInfo = mDatabaseImpl.GetType().GetProperty(databaseParam.Name);
+                if (propertyInfo.PropertyType == typeof(string))
+                {
+                    propertyInfo.SetValue(mDatabaseImpl, databaseParam.Value);
+                }
+                else if (propertyInfo.PropertyType == typeof(int))
+                {
+                    propertyInfo.SetValue(mDatabaseImpl, int.Parse((string)databaseParam.Value));
+                }
+
+                // TODO: handle other types
+
+            }
         }
 
         public Boolean Connect(bool displayErrorPopup = false)
@@ -317,7 +369,10 @@ namespace GingerCore.Environments
         {
             try
             {
-                mDatabaseImpl.CloseConnection();                
+                if (mDatabaseImpl != null)
+                {
+                    mDatabaseImpl.CloseConnection();
+                }
             }
             catch (Exception e)
             {

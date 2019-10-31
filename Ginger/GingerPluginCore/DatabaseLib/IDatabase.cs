@@ -21,12 +21,14 @@ using System;
 
 namespace Amdocs.Ginger.Plugin.Core.DatabaseLib
 {
-    // Interface for the basic database operation
+    // Interface for the basic database operations
 
     // Mark it as plugin interface so will be written to the services json
     [GingerInterface("IDatabase", "Database Interface")]
     public interface IDatabase
-    {        
+    {
+        string ConnectionString { get; set; }
+
         Boolean OpenConnection();
         void CloseConnection();
 

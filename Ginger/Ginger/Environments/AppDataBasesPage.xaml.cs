@@ -27,7 +27,6 @@ using GingerCore.DataSource;
 using GingerCore.Environments;
 using GingerWPF.WizardLib;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -57,7 +56,7 @@ namespace Ginger.Environments
             {
                 grdAppDbs.grdMain.CellEditEnding += grdMain_CellEditEnding;
                 grdAppDbs.grdMain.PreparingCellForEdit += grdMain_PreparingCellForEdit;
-            }
+            }            
         }
 
         private void grdMain_PreparingCellForEdit(object sender, DataGridPreparingCellForEditEventArgs e)
@@ -298,7 +297,10 @@ namespace Ginger.Environments
         private void grdAppDbs_SelectedItemChanged(object selectedItem)
         {
             Database database = (Database)selectedItem;
-            
+            xDBNameTextBox.BindControl(database, nameof(Database.Name));            
+            xParamsGrid.ItemsSource = database.DBParmas;
+            xConnectionStringTextBox.ClearControlsBindings();
+            xConnectionStringTextBox.BindControl(database, nameof(Database.ConnectionString));
             // TODO: get parameters and show in frame use same mechanism like plugins
         }
     }

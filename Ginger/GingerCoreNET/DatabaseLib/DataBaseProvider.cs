@@ -35,9 +35,8 @@ namespace Amdocs.Ginger.CoreNET.DatabaseLib
                 pluginPackage = WorkSpace.Instance.PlugInsManager.GetDatabasePluginPackage(database.ServiceID);
                 string fileName = Path.Combine(pluginPackage.Folder, pluginPackage.StartupDLL);
                 Assembly assembly = Assembly.LoadFrom(fileName);
-
                 string serviceClass = GetServiceClass(database.ServiceID);
-                databaseImpl = (IDatabase)assembly.CreateInstance(serviceClass);
+                databaseImpl = (IDatabase)assembly.CreateInstance(serviceClass);                                
                 return databaseImpl;
             }
             
@@ -46,6 +45,8 @@ namespace Amdocs.Ginger.CoreNET.DatabaseLib
 
             return databaseImpl;
         }
+
+        
 
         private void UpdateServiceIDFromDBType(Database database)
         {

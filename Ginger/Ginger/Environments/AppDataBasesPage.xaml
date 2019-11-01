@@ -25,6 +25,7 @@
         </Grid.Resources>
         
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30*"/>
             <ColumnDefinition Width="50*"/>
             <ColumnDefinition Width="50*"/>
         </Grid.ColumnDefinitions>
@@ -32,28 +33,39 @@
             <RowDefinition/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
-        
-        <Ginger:ucGrid x:Name="grdAppDbs" Title="Application Data Bases" ShowRefresh="Collapsed" Grid.ColumnSpan="2" SelectedItemChanged="grdAppDbs_SelectedItemChanged"/>
 
-        <StackPanel Grid.Row="1">
+        <Ginger:ucGrid x:Name="grdAppDbs" Title="Application Data Bases" ShowRefresh="Collapsed" Grid.RowSpan="2" SelectedItemChanged="grdAppDbs_SelectedItemChanged"/>
+
+        <StackPanel Grid.RowSpan="2" Grid.Column="1" Margin="20">
             <Label>Name</Label>
             <TextBox x:Name="xDBNameTextBox"></TextBox>
 
-            <Label>Connection String</Label>
+            <Label>Description</Label>
+            <TextBox x:Name="xDescriptionTextBox"></TextBox>
+
+            <Label>DB Service</Label>
+            <TextBox x:Name="xDBServiceTextBox" IsReadOnly="True"></TextBox>
+            <StackPanel Orientation="Horizontal">
+                <Label>Connection String</Label>
+                <Button x:Name="xTestButton" Click="xTestButton_Click">Test</Button>
+            </StackPanel>
             <TextBox x:Name="xConnectionStringTextBox" Height="50"></TextBox>
 
-            <DataGrid x:Name="xParamsGrid" CanUserAddRows="False" AutoGenerateColumns="False" Margin="0,10,0,0">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                    <DataGridTextColumn Header="Value" Binding="{Binding Value}"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            
         </StackPanel>
 
-        <Frame x:Name="xParametersFrame" Grid.Column="1" Grid.Row="1"></Frame>
+        <DataGrid x:Name="xParamsGrid" CanUserAddRows="False" AutoGenerateColumns="False" Margin="20" Grid.Column="2" Grid.RowSpan="2">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                <DataGridTextColumn Header="Value" Binding="{Binding Value}"/>
+            </DataGrid.Columns>
+        </DataGrid>
 
-        
+        <!--<Frame x:Name="xParametersFrame" Grid.Column="1" Grid.Row="1"></Frame>-->
 
+
+        <GridSplitter ResizeDirection="Columns" Grid.RowSpan="2" Grid.Column="0" Width="10" HorizontalAlignment="Right" Grid.Row="0" VerticalAlignment="Stretch" Style="{StaticResource @VerticalGridSplitterStyle}" />
+        <GridSplitter ResizeDirection="Columns" Grid.RowSpan="2" Grid.Column="1" Width="10" HorizontalAlignment="Right" Grid.Row="0" VerticalAlignment="Stretch" Style="{StaticResource @VerticalGridSplitterStyle}" />
 
     </Grid>
 </Page>

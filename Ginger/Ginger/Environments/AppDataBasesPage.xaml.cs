@@ -146,35 +146,38 @@ namespace Ginger.Environments
         }
 
         #region Events
-        private void TestDBConnection(object sender, RoutedEventArgs e)
+        private void TestDBConnection()
         {
             try
             {
-                Database db = (Database)grdAppDbs.grdMain.SelectedItem;                                
+                Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+                Database db = (Database)grdAppDbs.grdMain.SelectedItem;                       
                 if (db == null)
                 {
                     Reporter.ToUser(eUserMsgKey.AskToSelectItem);
                     return;
                 }
-
                 db.DSList = WorkSpace.Instance.SolutionRepository.GetAllRepositoryItems<DataSourceBase>();
                 db.ProjEnvironment = mContext.Environment;
                 db.BusinessFlow =  null;
-                if (string.IsNullOrEmpty(db.ConnectionString) && !string.IsNullOrEmpty(db.TNS) && db.TNS.ToLower().Contains("data source=") && db.TNS.ToLower().Contains("password=") && db.TNS.ToLower().Contains("user id="))
-                {
-                    System.Data.SqlClient.SqlConnectionStringBuilder scSB = new System.Data.SqlClient.SqlConnectionStringBuilder();
-                    scSB.ConnectionString = db.TNS;
-                    db.TNS = scSB.DataSource;
-                    db.User = scSB.UserID;
-                    db.Pass = scSB.Password;
-                    db.ConnectionString = scSB.ConnectionString;
-                }
-                if (!string.IsNullOrEmpty(db.TNS) && string.IsNullOrEmpty(db.ConnectionString))
-                {
-                    db.ConnectionString = db.TNS;
-                }
-                // db.CloseConnection();
-                if (db.TestConnection() == true)
+                //if (string.IsNullOrEmpty(db.ConnectionString) && !string.IsNullOrEmpty(db.TNS) && db.TNS.ToLower().Contains("data source=") && db.TNS.ToLower().Contains("password=") && db.TNS.ToLower().Contains("user id="))
+                //{
+                //    System.Data.SqlClient.SqlConnectionStringBuilder scSB = new System.Data.SqlClient.SqlConnectionStringBuilder();
+                //    scSB.ConnectionString = db.TNS;
+                //    db.TNS = scSB.DataSource;
+                //    db.User = scSB.UserID;
+                //    db.Pass = scSB.Password;
+                //    db.ConnectionString = scSB.ConnectionString;
+                //}
+                //if (!string.IsNullOrEmpty(db.TNS) && string.IsNullOrEmpty(db.ConnectionString))
+                //{
+                //    db.ConnectionString = db.TNS;
+                //}
+                //// db.CloseConnection();
+
+                bool connected = db.TestConnection();
+                Mouse.OverrideCursor = null;
+                if (connected)
                 {
                     Reporter.ToUser(eUserMsgKey.DbConnSucceed);
                 }
@@ -182,12 +185,13 @@ namespace Ginger.Environments
                 {
                     Reporter.ToUser(eUserMsgKey.DbConnFailed);
                 }
-                db.CloseConnection();
+                // db.CloseConnection();
+                
             }
             catch (Exception ex)
             {
-
-                // TODO: remove  !!!!!!!!!!!!!!!!!!!!!!
+                Mouse.OverrideCursor = null;
+                // TODO: remove  !!!!!!!!!!!!!!!!!!!!!! check it in Oracle plugin
                 if (ex.Message.Contains("Oracle.ManagedDataAccess.dll is missing"))
                 {
                     if (Reporter.ToUser(eUserMsgKey.OracleDllIsMissing, AppDomain.CurrentDomain.BaseDirectory) == Amdocs.Ginger.Common.eUserMsgSelection.Yes)
@@ -198,10 +202,12 @@ namespace Ginger.Environments
                         
                     }
                     return;
-                }
-                
-               Reporter.ToUser(eUserMsgKey.ErrorConnectingToDataBase, ex.Message);
+                }                
+                Reporter.ToUser(eUserMsgKey.ErrorConnectingToDataBase, ex.Message);
             }
+            
+                
+            
         }
         #endregion Events
 
@@ -213,7 +219,7 @@ namespace Ginger.Environments
             grdAppDbs.ShowUpDown = Visibility.Collapsed;
             grdAppDbs.ShowUndo = Visibility.Visible;
             grdAppDbs.ShowHeader = Visibility.Collapsed;
-            grdAppDbs.AddToolbarTool(eImageType.DataSource, "Test Connection", new RoutedEventHandler(TestDBConnection));
+            // grdAppDbs.AddToolbarTool(eImageType.DataSource, "Test Connection", new RoutedEventHandler(TestDBConnection));
 
             grdAppDbs.btnAdd.AddHandler(Button.ClickEvent, new RoutedEventHandler(AddNewDB));
 
@@ -301,7 +307,15 @@ namespace Ginger.Environments
             xParamsGrid.ItemsSource = database.DBParmas;
             xConnectionStringTextBox.ClearControlsBindings();
             xConnectionStringTextBox.BindControl(database, nameof(Database.ConnectionString));
+            xDBServiceTextBox.BindControl(database, nameof(Database.ServiceID));
+            xDescriptionTextBox.BindControl(database, nameof(Database.Description));
             // TODO: get parameters and show in frame use same mechanism like plugins
+        }
+        
+
+        private void xTestButton_Click(object sender, RoutedEventArgs e)
+        {
+            TestDBConnection();
         }
     }
 }

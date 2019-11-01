@@ -30,9 +30,7 @@ namespace Amdocs.Ginger.Plugin.Core.DatabaseLib
         string ConnectionString { get; set; }
 
         Boolean OpenConnection();
-        void CloseConnection();
-
-        string ConnectionString { get; set; }
+        void CloseConnection();        
 
         object ExecuteQuery(string Query); //  int? timeout = null : TODO // Return Data table         
 

@@ -386,14 +386,21 @@ namespace GingerCore.Environments
         public List<string> GetTablesList(string Keyspace = null)
         {
             VerifyDBImpl();
-            return mSQLDatabaseImpl.GetTablesList();
+            mDatabaseImpl.OpenConnection();
+            List<string> tables = mSQLDatabaseImpl.GetTablesList();
+            mDatabaseImpl.CloseConnection();
+            return tables;
+            
         }
 
 
         public List<string> GetTablesColumns(string table)
         {
             VerifyDBImpl();
-            return mSQLDatabaseImpl.GetTablesColumns(table);            
+            mDatabaseImpl.OpenConnection();
+            List<string> columns = mSQLDatabaseImpl.GetTablesColumns(table); ;
+            mDatabaseImpl.CloseConnection();
+            return columns;
         }
 
         public object UpdateDB(string updateCmd, bool commit)   // commit !???
@@ -417,7 +424,9 @@ namespace GingerCore.Environments
         public object ExecuteQuery(string query)
         {            
             VerifyDBImpl();
+            mDatabaseImpl.OpenConnection();
             object result = mDatabaseImpl.ExecuteQuery(query);
+            mDatabaseImpl.CloseConnection();
             return result;           
         }
 

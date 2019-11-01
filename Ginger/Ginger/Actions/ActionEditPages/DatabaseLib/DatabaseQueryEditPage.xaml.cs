@@ -42,6 +42,9 @@ namespace Ginger.Actions.ActionEditPages.DatabaseLib
 
             // !!!!!!!!!!!!!!!!!!! ??????????????????? Fix me !!??? missing causing compile err
             // GingerCore.GeneralLib.BindingHandler.ActInputValueBinding(ImportFile, CheckBox.IsCheckedProperty, mAct.GetOrCreateInputParam(nameof (ActDBValidation.ImportFile), "True"));
+
+            xQueryTextEditor.Bind(act, nameof(ActDBValidation.SQL));
+            xQueryTextEditor.SetDocumentEditor(new DatabaseQueryTextEditor());
         }
 
         public void parseScriptHeader(string FileName)

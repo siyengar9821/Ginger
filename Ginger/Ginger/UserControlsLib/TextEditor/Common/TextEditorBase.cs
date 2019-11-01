@@ -16,15 +16,14 @@ limitations under the License.
 */
 #endregion
 
-using ICSharpCode.AvalonEdit.Highlighting;
-using System.Collections.Generic;
-using System.Windows.Controls;
-using System.IO;
-using System.Xml;
+using Amdocs.Ginger.Plugin.Core;
 using Ginger.UserControlsLib.TextEditor.Common;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using GingerPlugIns.TextEditorLib;
-using Amdocs.Ginger.Plugin.Core;
+using ICSharpCode.AvalonEdit.Highlighting;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Controls;
+using System.Xml;
 
 namespace Ginger.UserControlsLib.TextEditor
 {

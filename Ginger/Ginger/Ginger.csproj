@@ -438,6 +438,7 @@
     <Compile Include="Actions\ActionEditPages\DatabaseLib\UpdateDatabaseEditPage.xaml.cs">
       <DependentUpon>UpdateDatabaseEditPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Actions\ActionEditPages\DatabaseLib\DatabaseQueryTextEditor.cs" />
     <Compile Include="Actions\ActionLogConfigPage.xaml.cs">
       <DependentUpon>ActionLogConfigPage.xaml</DependentUpon>
     </Compile>

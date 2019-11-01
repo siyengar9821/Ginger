@@ -288,11 +288,10 @@ namespace GingerCore.Environments
         public static IDBProvider iDBProvider { get; set; }
 
         void VerifyDBImpl()
-        {
-            UpdateDBImplFromParams();
-
+        {            
             if (mDatabaseImpl != null) 
             {
+                UpdateDBImplFromParams();
                 return;
             }
             
@@ -306,6 +305,7 @@ namespace GingerCore.Environments
             
             mDatabaseImpl = iDBProvider.GetDBImpl(this);
             UpdateDBParamsFromDBImpl();
+            UpdateDBImplFromParams();
         }
 
         private void UpdateDBParamsFromDBImpl()

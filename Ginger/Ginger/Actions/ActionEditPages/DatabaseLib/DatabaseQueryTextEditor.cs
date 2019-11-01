@@ -17,6 +17,7 @@ limitations under the License.
 #endregion
 
 using Amdocs.Ginger.Plugin.Core;
+using Ginger.UserControlsLib.TextEditor;
 using Ginger.UserControlsLib.TextEditor.Common;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -24,11 +25,12 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 
-namespace Ginger.UserControlsLib.TextEditor.VBS
+
+namespace Ginger.Actions.ActionEditPages.DatabaseLib
 {
-    public class VBScriptTextEditor : TextEditorBase
+    public class DatabaseQueryTextEditor : TextEditorBase
     {
-        public override string Descritpion { get {throw new NotImplementedException();}}
+        public override string Descritpion { get { throw new NotImplementedException(); } }
         public override Image Icon { get { throw new NotImplementedException(); } }
 
         public override List<string> Extensions
@@ -37,8 +39,7 @@ namespace Ginger.UserControlsLib.TextEditor.VBS
             {
                 if (mExtensions.Count == 0)
                 {
-                    mExtensions.Add(".vbs");
-                    mExtensions.Add(".vb");
+                    mExtensions.Add(".sql");                    
                 }
                 return mExtensions;
             }
@@ -47,23 +48,17 @@ namespace Ginger.UserControlsLib.TextEditor.VBS
         public override IHighlightingDefinition HighlightingDefinition
         {
             get
-            {                
+            {
+                // FIXME for SQL
                 return ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("VB");                
-
-                //TODO: add highlight def of Ginger in/out params
             }
         }
 
-        public override IFoldingStrategy FoldingStrategy
-        {
-            get
-            {                
-                return null;
-            }
-        }
 
+         
         public override List<ICompletionData> GetCompletionData(string txt, SelectedContentArgs SelectedContentArgs)
         {
+            // Add SQL SELECT WHERE FROM and the tables list
             return null;
         }
 
@@ -80,5 +75,7 @@ namespace Ginger.UserControlsLib.TextEditor.VBS
         {
             get { return null; }
         }
+
+        public override UserControlsLib.TextEditor.IFoldingStrategy FoldingStrategy => null;
     }
 }

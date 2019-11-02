@@ -41,10 +41,10 @@ namespace Ginger.Actions.ActionEditPages.DatabaseLib
         {
             try
             {
-                if (TablesComboBox.Items.Count > 0) return;
+                // if (TablesComboBox.Items.Count > 0) return;
                 Mouse.OverrideCursor = Cursors.Wait;
-                Reporter.ToStatus(eStatusMsgKey.StaticStatusProcess, null, "Loading Tables...");                
-
+                Reporter.ToStatus(eStatusMsgKey.StaticStatusProcess, null, "Loading Tables...");
+                
                 List<string> Tables = mDatabase.GetTablesList();  // !!!!!!!!!!!!!!!! "KeySpace"
                 if (Tables == null)
                 {

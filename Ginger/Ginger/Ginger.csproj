@@ -438,7 +438,7 @@
     <Compile Include="Actions\ActionEditPages\DatabaseLib\UpdateDatabaseEditPage.xaml.cs">
       <DependentUpon>UpdateDatabaseEditPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Actions\ActionEditPages\DatabaseLib\DatabaseQueryTextEditor.cs" />
+    <Compile Include="UserControlsLib\TextEditor\DBQuery\DatabaseQueryTextEditor.cs" />
     <Compile Include="Actions\ActionLogConfigPage.xaml.cs">
       <DependentUpon>ActionLogConfigPage.xaml</DependentUpon>
     </Compile>
@@ -665,6 +665,7 @@
     <Compile Include="DatabaseLib\AddDataBaseWizardPage.xaml.cs">
       <DependentUpon>AddDataBaseWizardPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControlsLib\TextEditor\DBQuery\DatabaseQueryCompletionData.cs" />
     <Compile Include="Variables\VariablesListViewHelper.cs" />
     <Compile Include="Variables\VariabelsListViewPage.xaml.cs">
       <DependentUpon>VariabelsListViewPage.xaml</DependentUpon>
@@ -4567,6 +4568,9 @@
     </Resource>
     <Resource Include="DataSource\ImportExcelWizardLib\ImportDataSourceIntro.md" />
     <Resource Include="RunSetLib\CreateAutoRunWizardLib\AutoRunIntroduction.md" />
+    <None Include="UserControlsLib\TextEditor\DBQuery\DatabaseQuery.xshd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="UserControlsLib\TextEditor\Gherkin\GherkinHighlighting.xshd">
       <SubType>Designer</SubType>
     </None>

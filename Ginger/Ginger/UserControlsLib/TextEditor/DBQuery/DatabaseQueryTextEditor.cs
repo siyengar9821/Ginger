@@ -48,9 +48,8 @@ namespace Ginger.Actions.ActionEditPages.DatabaseLib
         public override IHighlightingDefinition HighlightingDefinition
         {
             get
-            {
-                // FIXME for SQL
-                return ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("VB");                
+            {                                
+                return GetHighlightingDefinitionFromResource(Properties.Resources.DatabaseQuery);             
             }
         }
 
@@ -58,7 +57,12 @@ namespace Ginger.Actions.ActionEditPages.DatabaseLib
          
         public override List<ICompletionData> GetCompletionData(string txt, SelectedContentArgs SelectedContentArgs)
         {
-            // Add SQL SELECT WHERE FROM and the tables list
+            List<ICompletionData> list = new List<ICompletionData>();
+            //list.Add(new GherkinTextCompletionData("Given"));
+            //list.Add(new GherkinTextCompletionData("When"));
+            //list.Add(new GherkinTextCompletionData("Then"));
+            //list.Add(new GherkinTextCompletionData("And"));
+
             return null;
         }
 

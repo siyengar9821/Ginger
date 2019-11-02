@@ -16,10 +16,12 @@ limitations under the License.
 */
 #endregion
 
+using amdocs.ginger.GingerCoreNET;
 using Amdocs.Ginger.Common;
+using Amdocs.Ginger.Plugin.Core;
+using Amdocs.Ginger.Repository;
 using Ginger.GherkinLib;
 using Ginger.UserControlsLib.TextEditor.Common;
-using GingerCore;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -28,13 +30,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using GingerPlugIns.TextEditorLib;
-using Ginger.TagsLib;
-using Amdocs.Ginger.Repository;
-using amdocs.ginger.GingerCoreNET;
-using Amdocs.Ginger.Plugin.Core;
 
 namespace Ginger.UserControlsLib.TextEditor.Gherkin
 {

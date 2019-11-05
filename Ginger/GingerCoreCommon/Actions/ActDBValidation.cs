@@ -369,7 +369,7 @@ namespace GingerCore.Actions
                     Error = "Fail to run Update SQL: " + Environment.NewLine + SQL + Environment.NewLine + "Error = Missing Query";
 
                 int count = DB.ExecuteNonQuery(SQL);  
-                this.AddOrUpdateReturnParamActual("Impacted Lines", count + "");
+                this.AddOrUpdateReturnParamActual("Impacted Rows", count + "");
                 
             }
             catch (Exception e)

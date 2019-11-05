@@ -36,9 +36,7 @@ namespace GingerCore.Environments
     {
         IDatabase mDatabaseImpl;
 
-        // For SQL Database
-        // In case we reuse the connection
-        DbConnection mDbConnection;
+        
 
         ISQLDatabase mSQLDatabaseImpl { get { return (ISQLDatabase)mDatabaseImpl; } }
 
@@ -496,10 +494,13 @@ namespace GingerCore.Environments
 
         public virtual int ExecuteNonQuery(string command)
         {
-            DbCommand dbCommand = mDbConnection.CreateCommand();
+            DbConnection dbConnection = mSQLDatabaseImpl.GetDbConnection();
+            DbCommand dbCommand = dbConnection.CreateCommand();
             dbCommand.CommandText = command;
             // dbCommand.CommandTimeout
+            dbConnection.Open();
             int rows = dbCommand.ExecuteNonQuery();
+            dbConnection.Close();
             return rows;
         }
 

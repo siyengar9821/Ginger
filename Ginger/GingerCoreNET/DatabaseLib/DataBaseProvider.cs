@@ -56,7 +56,7 @@ namespace Amdocs.Ginger.CoreNET.DatabaseLib
                     database.ServiceID = "MSAccessService";
                     break;
                 case Database.eDBTypes.MySQL:
-                    database.ServiceID = "MySQLService";
+                    database.ServiceID = "MySQLDatabaseService";
                     break;
                 case Database.eDBTypes.Oracle:
                     database.ServiceID = "OracleService";
@@ -74,8 +74,8 @@ namespace Amdocs.Ginger.CoreNET.DatabaseLib
             {
                 case "MSAccessService":
                     return "MSAccessDB.MSAccessDBCon";
-                case "MySQLService":
-                    return "MySQLDatabase.MYSQLDBConnection";
+                case "MySQLDatabaseService":
+                    return "MySQLDatabase.MYSQLDatabaseService";
                 case "OracleService":
                     return "Oracle.GingerOracleConnection";
                 default:

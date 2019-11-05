@@ -334,14 +334,14 @@ namespace GingerCore.Actions
             this.AddOrUpdateReturnParamActual("Record Count", count);
         }
 
-        Int64 GetRecordCount()
+        long GetRecordCount()
         {
             string SQL = GetInputParamCalculatedValue("SQL");
             if (string.IsNullOrEmpty(SQL))
             {
                 Error = "GetRecordCount missing SQL: " + Environment.NewLine + SQL + Environment.NewLine + "Error = Missing Query";
             }
-            Int64 count = DB.GetRecordCount(SQL);
+            long count = DB.GetRecordCount(SQL);
             return count;
         }
 
@@ -366,8 +366,8 @@ namespace GingerCore.Actions
                 if (string.IsNullOrEmpty(SQL))
                     Error = "Fail to run Update SQL: " + Environment.NewLine + SQL + Environment.NewLine + "Error = Missing Query";
 
-                string val = (string)DB.ExecuteQuery(SQL);  //UpdateDB(SQL);  // ExecuteQuery
-                this.AddOrUpdateReturnParamActual("Impacted Lines", val);
+                int count = DB.ExecuteNonQuery(SQL);  
+                this.AddOrUpdateReturnParamActual("Impacted Lines", count + "");
                 
             }
             catch (Exception e)
@@ -525,14 +525,16 @@ namespace GingerCore.Actions
                     DBResponse.Rows.Add(new string[] { value });                    
                     break;
                 case eDBValidationType.RecordCount:
-                    string count = GetRecordCount() + "";
+                    long count = GetRecordCount();
                     DBResponse = new DataTable();
                     DBResponse.Columns.Add("Count");
-                    DBResponse.Rows.Add(new string[] { count });
+                    DBResponse.Rows.Add(new string[] { count + "" });
                     break;
                 case eDBValidationType.UpdateDB:
-                    string rc = (string)DB.ExecuteQuery(SQL); 
-                    // TODO: fix me
+                    long impactedRows = DB.ExecuteNonQuery(SQL);
+                    DBResponse = new DataTable();
+                    DBResponse.Columns.Add("Impacted Rows");
+                    DBResponse.Rows.Add(new string[] { impactedRows + "" });
                     break;
             }
 

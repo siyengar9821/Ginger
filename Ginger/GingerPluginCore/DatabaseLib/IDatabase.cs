@@ -16,8 +16,6 @@ limitations under the License.
 */
 #endregion
 
-using Amdocs.Ginger.Plugin.Core.Reporter;
-using System;
 
 namespace Amdocs.Ginger.Plugin.Core.DatabaseLib
 {
@@ -29,11 +27,15 @@ namespace Amdocs.Ginger.Plugin.Core.DatabaseLib
     {
         string ConnectionString { get; set; }
 
-        Boolean OpenConnection();
-        void CloseConnection();        
+        // Boolean OpenConnection();
+        // void CloseConnection();
 
-        object ExecuteQuery(string Query); //  int? timeout = null : TODO // Return Data table         
+         
 
-        void InitReporter(IReporter reporter);
+
+        // Update commands
+        // int ExecuteNonQuery(string command);
+
+        // void InitReporter(IReporter reporter);
     }
 }

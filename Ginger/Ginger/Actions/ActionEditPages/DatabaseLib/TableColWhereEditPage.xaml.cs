@@ -50,6 +50,8 @@ namespace Ginger.Actions.ActionEditPages.DatabaseLib
                 {
                     return;
                 }
+
+                TablesComboBox.Items.Clear();
                 foreach (string table in Tables)
                 {
                     TablesComboBox.Items.Add(table);

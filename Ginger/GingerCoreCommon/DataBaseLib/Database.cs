@@ -20,6 +20,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Reflection;
 using Amdocs.Ginger.Common;
@@ -34,6 +35,10 @@ namespace GingerCore.Environments
     public class Database : RepositoryItemBase 
     {
         IDatabase mDatabaseImpl;
+
+        // For SQL Database
+        // In case we reuse the connection
+        DbConnection mDbConnection;
 
         ISQLDatabase mSQLDatabaseImpl { get { return (ISQLDatabase)mDatabaseImpl; } }
 
@@ -277,13 +282,17 @@ namespace GingerCore.Environments
         public Boolean TestConnection()
         {
             VerifyDBImpl();
-            bool b = mDatabaseImpl.OpenConnection();
-            if (b)
-            {
-                mDatabaseImpl.CloseConnection();
-            }
+            DbConnection dbConnection =  mSQLDatabaseImpl.GetDbConnection();            
+            dbConnection.Open();
+            bool b = dbConnection.State == ConnectionState.Open;
+            dbConnection.Close();
             return b;
+
+            // Add try catch !!!!!!!!!!!!!!!!!!
         }
+
+            
+       
 
         public static IDBProvider iDBProvider { get; set; }
 
@@ -332,111 +341,112 @@ namespace GingerCore.Environments
         }
 
         private void UpdateDBImplFromParams()
-        {
+        {            
+            if (!string.IsNullOrEmpty(ConnectionString ))
+            {
+                mDatabaseImpl.ConnectionString = ConnectionString;                
+            }
+
+
             // Update params using reflection
             foreach (DatabaseParam databaseParam in DBParmas)
             {
                 PropertyInfo propertyInfo = mDatabaseImpl.GetType().GetProperty(databaseParam.Name);
-                if (propertyInfo.PropertyType == typeof(string))
+                if (databaseParam.Value != null)
                 {
-                    propertyInfo.SetValue(mDatabaseImpl, databaseParam.Value);
-                }
-                else if (propertyInfo.PropertyType == typeof(int))
-                {
-                    propertyInfo.SetValue(mDatabaseImpl, int.Parse((string)databaseParam.Value));
-                }
+                    if (propertyInfo.PropertyType == typeof(string))
+                    {
+                        propertyInfo.SetValue(mDatabaseImpl, databaseParam.Value);
+                    }
+                    else if (propertyInfo.PropertyType == typeof(int))
+                    {
+                        propertyInfo.SetValue(mDatabaseImpl, int.Parse((string)databaseParam.Value));
+                    }
 
-                // TODO: handle other types
+                    // TODO: handle other types
+                }
 
             }
         }
 
         public Boolean Connect(bool displayErrorPopup = false)
         {
-            VerifyDBImpl();
-            if (mDatabaseImpl != null)
-            {
-                return mDatabaseImpl.OpenConnection(); 
-            }
-            else
-            {
-                return false;
-            }
+            //VerifyDBImpl();
+            //if (mDatabaseImpl != null)
+            //{
+            //    return mDatabaseImpl.OpenConnection(); 
+            //}
+            //else
+            //{
+            //    return false;
+            //}
+            return true;
 
         }
        
         public void CloseConnection()
         {
-            try
-            {
-                if (mDatabaseImpl != null)
-                {
-                    mDatabaseImpl.CloseConnection();
-                }
-            }
-            catch (Exception e)
-            {
-                Reporter.ToLog(eLogLevel.ERROR, "Failed to close DB Connection", e);
-                throw;
-            }            
+            //try
+            //{
+            //    if (mDatabaseImpl != null)
+            //    {
+            //        mDatabaseImpl.CloseConnection();
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    Reporter.ToLog(eLogLevel.ERROR, "Failed to close DB Connection", e);
+            //    throw;
+            //}            
         }
 
        
 
-        public List<string> GetTablesList(string Keyspace = null)
+        public List<string> GetTablesList() // string Keyspace = null
         {
             VerifyDBImpl();
-            mDatabaseImpl.OpenConnection();
-            List<string> tables = mSQLDatabaseImpl.GetTablesList();
-            mDatabaseImpl.CloseConnection();
+
+            DbConnection dbConnection = mSQLDatabaseImpl.GetDbConnection();            
+            dbConnection.Open();
+            DataTable dataTable = dbConnection.GetSchema("Tables");
+            dbConnection.Close();
+            List<string> tables = mSQLDatabaseImpl.GetTablesList(dataTable);
+
             return tables;
-            
+
         }
 
 
         public List<string> GetTablesColumns(string table)
         {
-            VerifyDBImpl();
-            mDatabaseImpl.OpenConnection();
-            List<string> columns = mSQLDatabaseImpl.GetTablesColumns(table); ;
-            mDatabaseImpl.CloseConnection();
-            return columns;
+            //VerifyDBImpl();
+            //mDatabaseImpl.OpenConnection();
+            //List<string> columns = mSQLDatabaseImpl.GetTablesColumns(table); ;
+            //mDatabaseImpl.CloseConnection();
+            //return columns;
+            return null;
         }
 
-        public object UpdateDB(string updateCmd, bool commit)   // commit !???
-        {
-            VerifyDBImpl();
-            object result = mDatabaseImpl.ExecuteQuery(updateCmd);
-            return result;            
-        }
 
+        
+        
         // For SQL database
         public string GetSingleValue(string table, string column, string where)
-        {
-            VerifyDBImpl();
-
+        {         
             string sql = $"SELECT {column} FROM {table} WHERE {where}";
-            DataTable dataTable = (DataTable)mDatabaseImpl.ExecuteQuery(sql);
-            return dataTable.Rows[0][0].ToString();
+            DataTable dataTable = ExecuteQuery(sql);
+            return dataTable.Rows[0][0].ToString();            
         }
 
 
-        public object ExecuteQuery(string query)
-        {            
-            VerifyDBImpl();
-            mDatabaseImpl.OpenConnection();
-            object result = mDatabaseImpl.ExecuteQuery(query);
-            mDatabaseImpl.CloseConnection();
-            return result;           
-        }
+        
 
         // For SQL database
-        internal Int64 GetRecordCount(string query)
-        {
-            VerifyDBImpl();
+        public long GetRecordCount(string query)
+        {            
             string sql = $"SELECT COUNT(1) FROM {query}";
-            DataTable dataTable = (DataTable)mDatabaseImpl.ExecuteQuery(sql);
-            return (Int64)dataTable.Rows[0][0];
+            DataTable dataTable = ExecuteQuery(sql);
+            return long.Parse(dataTable.Rows[0][0].ToString());            
         }
 
 
@@ -451,5 +461,47 @@ namespace GingerCore.Environments
                 this.Name = value;
             }
         }
+
+
+        // For SQLDatatbase
+        public virtual DataTable ExecuteQuery(string query)
+        {
+            VerifyDBImpl();
+
+            DbConnection dbConnection = mSQLDatabaseImpl.GetDbConnection();            
+            dbConnection.Open();
+            DbCommand dbCommand = dbConnection.CreateCommand();
+            dbCommand.CommandText = query;
+            DbDataReader rr = dbCommand.ExecuteReader();
+            DataTable dataTable = new DataTable();
+            dataTable.Load(rr);
+            dbConnection.Close();
+            return dataTable;
+        }
+
+        // !!!!!!!!!!!!!!!!! cleanup
+        //public int UpdateDB(string updateCmd, bool commit)   // commit !???
+        //{
+        //    VerifyDBImpl();
+
+        //    // mDbConnection.ConnectionString = mDatabaseImpl.ConnectionString;
+        //    mDbConnection.Open();
+        //    DbCommand dbCommand = mDbConnection.CreateCommand();
+        //    dbCommand.CommandText = updateCmd;
+        //    int count = dbCommand.ExecuteNonQuery();
+        //    mDbConnection.Close();
+        //    return count;
+        //}
+
+
+        public virtual int ExecuteNonQuery(string command)
+        {
+            DbCommand dbCommand = mDbConnection.CreateCommand();
+            dbCommand.CommandText = command;
+            // dbCommand.CommandTimeout
+            int rows = dbCommand.ExecuteNonQuery();
+            return rows;
+        }
+
     }
 }

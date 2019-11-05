@@ -10,13 +10,9 @@ namespace Amdocs.Ginger.Plugin.Core.DatabaseLib
     {
         DbConnection GetDbConnection();
 
-        // DataTable ExecuteQuery(string query); //  int? timeout = null : TODO // Return Data table         
+        List<string> GetTablesList(DataTable tablesSchema);
 
-
-        List<string> GetTablesList(DataTable TablesSchema);
-
-        List<string> GetTableColumns(string table);
-        
-        // Int64 GetRecordCount(string Query);
+        List<string> GetTableColumns(DataTable tableSchema);
+                
     }
 }

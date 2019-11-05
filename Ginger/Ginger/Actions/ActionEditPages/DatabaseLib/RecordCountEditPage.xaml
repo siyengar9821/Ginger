@@ -16,7 +16,7 @@
             <Label Style="{StaticResource @InputFieldLabelStyle}">Count how many records exist in TBCustomers</Label>
             <Label Style="{StaticResource @InputFieldLabelStyle}">or</Label>
             <Label Style="{StaticResource @InputFieldLabelStyle}">TBCustomers Where Customer ID = 1</Label>
-            <Label Style="{StaticResource @InputFieldLabelStyle}">Use record count when you need to verify a new record was entered into the database</Label>
+            <Label Style="{StaticResource @InputFieldLabelStyle}" Content="i.e.: Use record count when you need to verify a new record was entered into the database"/>
             <Actions:UCValueExpression x:Name="xSQLUCValueExpression" Height="100" VerticalAlignment="Stretch"/>
             
         </StackPanel>

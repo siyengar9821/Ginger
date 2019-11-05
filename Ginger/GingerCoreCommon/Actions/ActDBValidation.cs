@@ -247,11 +247,9 @@ namespace GingerCore.Actions
                 case eDBValidationType.SimpleSQLOneValue:
                     SimpleSQLOneValueHandler();
                     break;
-
                 case eDBValidationType.FreeSQL:
                     FreeSQLHandler();
                     break;
-
                 case eDBValidationType.RecordCount:
                     RecordCountHandler();
                     break;
@@ -335,14 +333,18 @@ namespace GingerCore.Actions
         }
 
         long GetRecordCount()
-        {
-            string SQL = GetInputParamCalculatedValue("SQL");
+        {            
             if (string.IsNullOrEmpty(SQL))
             {
                 Error = "GetRecordCount missing SQL: " + Environment.NewLine + SQL + Environment.NewLine + "Error = Missing Query";
+                return -1;
             }
-            long count = DB.GetRecordCount(SQL);
-            return count;
+            else
+            {
+                long count = DB.GetRecordCount(SQL);
+                return count;
+            }
+            
         }
 
         private void UpdateSqlHndler()

@@ -190,19 +190,7 @@ namespace Ginger.Environments
             }
             catch (Exception ex)
             {
-                Mouse.OverrideCursor = null;
-                // TODO: remove  !!!!!!!!!!!!!!!!!!!!!! check it in Oracle plugin
-                if (ex.Message.Contains("Oracle.ManagedDataAccess.dll is missing"))
-                {
-                    if (Reporter.ToUser(eUserMsgKey.OracleDllIsMissing, AppDomain.CurrentDomain.BaseDirectory) == Amdocs.Ginger.Common.eUserMsgSelection.Yes)
-                    {
-                        System.Diagnostics.Process.Start("https://docs.oracle.com/database/121/ODPNT/installODPmd.htm#ODPNT8149");
-                        System.Threading.Thread.Sleep(2000);
-                        System.Diagnostics.Process.Start("http://www.oracle.com/technetwork/topics/dotnet/downloads/odacdeploy-4242173.html"); 
-                        
-                    }
-                    return;
-                }                
+                Mouse.OverrideCursor = null;                
                 Reporter.ToUser(eUserMsgKey.ErrorConnectingToDataBase, ex.Message);
             }
             

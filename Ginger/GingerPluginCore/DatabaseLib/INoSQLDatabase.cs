@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Amdocs.Ginger.Plugin.Core.DatabaseLib
 {
-    public class INoSQLDatabase
+    public interface INoSQLDatabase
     {
-        // TBD
+        List<string> ExecuteQuery(string query);
     }
 }

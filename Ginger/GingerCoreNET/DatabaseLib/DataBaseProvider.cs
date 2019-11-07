@@ -23,7 +23,7 @@ namespace Amdocs.Ginger.CoreNET.DatabaseLib
             if (database.ServiceID == null)
             {
                 UpdateServiceIDFromDBType(database);
-                
+
             }
 
 
@@ -36,17 +36,21 @@ namespace Amdocs.Ginger.CoreNET.DatabaseLib
                 string fileName = Path.Combine(pluginPackage.Folder, pluginPackage.StartupDLL);
                 Assembly assembly = Assembly.LoadFrom(fileName);
                 string serviceClass = GetServiceClass(database.ServiceID);
-                databaseImpl = (IDatabase)assembly.CreateInstance(serviceClass);                                
+                databaseImpl = (IDatabase)assembly.CreateInstance(serviceClass);
+                if (databaseImpl == null)
+                {
+                    throw new Exception("Cannot create class: " + serviceClass);
+                }
                 return databaseImpl;
             }
-            
+
 
             //TODO: FIXME: Temp until we switch to db run using sockets !!!
 
             return databaseImpl;
         }
 
-        
+
 
         private void UpdateServiceIDFromDBType(Database database)
         {
@@ -60,6 +64,9 @@ namespace Amdocs.Ginger.CoreNET.DatabaseLib
                     break;
                 case Database.eDBTypes.Oracle:
                     database.ServiceID = "OracleService";
+                    break;
+                case Database.eDBTypes.MongoDb:
+                    database.ServiceID = "MongoDB";
                     break;
 
 
@@ -78,10 +85,12 @@ namespace Amdocs.Ginger.CoreNET.DatabaseLib
                     return "MySQLDatabase.MYSQLDatabaseService";
                 case "OracleService":
                     return "Oracle.GingerOracleConnection";
+                case "MongoDBService":
+                    return "MongoDB.MongoDbConnection";
                 default:
                     throw new ArgumentException(serviceId);
             }
-                    
+
         }
     }
 }

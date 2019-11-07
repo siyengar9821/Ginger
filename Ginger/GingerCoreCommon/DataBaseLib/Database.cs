@@ -469,10 +469,19 @@ namespace GingerCore.Environments
             DbConnection dbConnection = mSQLDatabaseImpl.GetDbConnection();            
             dbConnection.Open();
             DbCommand dbCommand = dbConnection.CreateCommand();
+            dbCommand.CommandType = CommandType.Text;
+
+            // TODO:
+            // dbCommand.CommandTimeout =  // !!!!!!!!!!!!!!!!!!!
+            // dbCommand.ExecuteScalar
+            //dbCommand.
+
+            // DbDataAdapter dbDataAdapter = dbCommand.ad
+
             dbCommand.CommandText = query;
-            DbDataReader rr = dbCommand.ExecuteReader();
+            DbDataReader reader = dbCommand.ExecuteReader(CommandBehavior.SequentialAccess);                        
             DataTable dataTable = new DataTable();
-            dataTable.Load(rr);
+            dataTable.Load(reader);
             dbConnection.Close();
             return dataTable;
         }

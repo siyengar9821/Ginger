@@ -27,7 +27,7 @@
     <ProjectReference Include="..\GingerUtils\GingerUtils.csproj">
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>      
       <!--           When creating Nuget package uncomment the line below, so GingerUtils will be part of the package, then comment again so build will not fail on Azure         -->
-      <IncludeAssets>GingerUtils.dll</IncludeAssets>
+      <!--<IncludeAssets>GingerUtils.dll</IncludeAssets>-->
     </ProjectReference>
   </ItemGroup>
 

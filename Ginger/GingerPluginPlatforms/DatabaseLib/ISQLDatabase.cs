@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Text;
 
-namespace Amdocs.Ginger.Plugin.Core.DatabaseLib
+namespace Ginger.Plugin.Platform.Database
 {
     public interface ISQLDatabase
     {

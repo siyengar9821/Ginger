@@ -17,7 +17,9 @@ limitations under the License.
 #endregion
 
 
-namespace Amdocs.Ginger.Plugin.Core.DatabaseLib
+using Amdocs.Ginger.Plugin.Core;
+
+namespace Ginger.Plugin.Platform.Database
 {
     // Interface for the basic database operations
 
@@ -26,16 +28,7 @@ namespace Amdocs.Ginger.Plugin.Core.DatabaseLib
     public interface IDatabase
     {
         string ConnectionString { get; set; }
-
-        // Boolean OpenConnection();
-        // void CloseConnection();
-
-         
-
-
-        // Update commands
-        // int ExecuteNonQuery(string command);
-
+        
         // void InitReporter(IReporter reporter);
     }
 }

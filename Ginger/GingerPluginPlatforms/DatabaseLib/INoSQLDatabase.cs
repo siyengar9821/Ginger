@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Amdocs.Ginger.Plugin.Core.DatabaseLib
+namespace Ginger.Plugin.Platform.Database
 {
     public interface INoSQLDatabase
     {
         List<string> ExecuteQuery(string query);
+
+        
     }
 }

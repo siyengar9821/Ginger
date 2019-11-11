@@ -1,7 +1,7 @@
 ﻿using amdocs.ginger.GingerCoreNET;
 using Amdocs.Ginger.Common.DataBaseLib;
-using Amdocs.Ginger.Plugin.Core.DatabaseLib;
 using Amdocs.Ginger.Repository;
+using Ginger.Plugin.Platform.Database;
 using GingerCore.Environments;
 using System;
 using System.IO;

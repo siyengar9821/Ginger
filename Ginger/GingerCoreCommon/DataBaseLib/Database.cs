@@ -26,8 +26,8 @@ using System.Reflection;
 using Amdocs.Ginger.Common;
 using Amdocs.Ginger.Common.DataBaseLib;
 using Amdocs.Ginger.Plugin.Core;
-using Amdocs.Ginger.Plugin.Core.DatabaseLib;
 using Amdocs.Ginger.Repository;
+using Ginger.Plugin.Platform.Database;
 using GingerCore.DataSource;
 
 namespace GingerCore.Environments

@@ -22,7 +22,7 @@ using Amdocs.Ginger.Common.Actions;
 using Amdocs.Ginger.Common.Repository.PlugInsLib;
 using Amdocs.Ginger.CoreNET.Drivers.CommunicationProtocol;
 using Amdocs.Ginger.CoreNET.PlugInsLib;
-using Amdocs.Ginger.Plugin.Core.DatabaseLib;
+using Ginger.Plugin.Platform.Database;
 using GingerUtils;
 using Newtonsoft.Json;
 using System;

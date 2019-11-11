@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ginger.Plugin.Platform.Database
+namespace Ginger.Plugin.Platform
 {
     public interface INoSQLDatabase
     {

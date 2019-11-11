@@ -1,4 +1,4 @@
-﻿using Ginger.Plugin.Platform.Database;
+﻿using Ginger.Plugin.Platform;
 using GingerCore.Environments;
 
 namespace Amdocs.Ginger.Common.DataBaseLib

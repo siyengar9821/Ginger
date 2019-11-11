@@ -27,7 +27,7 @@ using Amdocs.Ginger.Common;
 using Amdocs.Ginger.Common.DataBaseLib;
 using Amdocs.Ginger.Plugin.Core;
 using Amdocs.Ginger.Repository;
-using Ginger.Plugin.Platform.Database;
+using Ginger.Plugin.Platform;
 using GingerCore.DataSource;
 
 namespace GingerCore.Environments
@@ -35,9 +35,7 @@ namespace GingerCore.Environments
     public class Database : RepositoryItemBase 
     {
         IDatabase mDatabaseImpl;
-
         
-
         ISQLDatabase mSQLDatabaseImpl { get { return (ISQLDatabase)mDatabaseImpl; } }
 
         // TODO: change to Service ID

@@ -18,14 +18,15 @@ limitations under the License.
 
 
 using Amdocs.Ginger.Plugin.Core;
+using Amdocs.Ginger.Plugin.Core.ActionsLib;
 
-namespace Ginger.Plugin.Platform.Database
+namespace Ginger.Plugin.Platform
 {
     // Interface for the basic database operations
 
     // Mark it as plugin interface so will be written to the services json
     [GingerInterface("IDatabase", "Database Interface")]
-    public interface IDatabase
+    public interface IDatabase : IPlatformService
     {
         string ConnectionString { get; set; }
         

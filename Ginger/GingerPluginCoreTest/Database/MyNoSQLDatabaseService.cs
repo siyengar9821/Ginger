@@ -6,8 +6,6 @@ using System.Collections.Generic;
 namespace GingerPluginCoreTest.Database
 {
 
-    
-
     public class MyNoSQLDatabaseService : IDatabase, INoSQLDatabase
     {
         public string ConnectionString { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

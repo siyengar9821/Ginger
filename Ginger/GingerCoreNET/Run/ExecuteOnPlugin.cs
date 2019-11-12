@@ -187,24 +187,20 @@ namespace Amdocs.Ginger.CoreNET.Run
         {                        
             NewPayLoad payload = GeneratePlatformActionPayload(actPlugin, agent);
 
-
             // Temp design !!!!!!!!!!!!!!!!!!
             ((Act)actPlugin).AddNewReturnParams = true;  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ???
 
             // Send the payload to the service
             NewPayLoad RC = agent.GingerNodeProxy.RunAction(payload);
-
-
-       
             
             ParseActionResult(RC, (Act)actPlugin);
-
-
             if (actPlugin is IActPluginPostRun ActPluginPostRun)
             {
                 ActPluginPostRun.ParseOutput();
             }
+
 #warning get the follinging from platform in fo 
+
             /*   IPlatformInfo Platforminfo = null;
 
                if(Platforminfo is IPlatformPluginPostRun PluginPostrun)
@@ -219,6 +215,23 @@ namespace Amdocs.Ginger.CoreNET.Run
                 Platfrominfo.PostExecute(agent, (Act)actPlugin);
             }
 
+        }
+
+        // Use for action which run on Agent - session
+        // without agent
+        // for example for database
+        public static void ExecutePlatformAction(GingerNodeProxy gingerNodeProxy, IActPluginExecution actPlugin)
+        {
+            
+            NewPayLoad payload = GeneratePlatformActionPayload(actPlugin, null);
+
+            // Temp design !!!!!!!!!!!!!!!!!!
+            // ((Act)actPlugin).AddNewReturnParams = true;  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ???
+
+            // Send the payload to the service
+            NewPayLoad RC = gingerNodeProxy.RunAction(payload);
+
+            ParseActionResult(RC, (Act)actPlugin);
         }
 
 
@@ -295,9 +308,7 @@ namespace Amdocs.Ginger.CoreNET.Run
         }
 
         public static void ParseActionResult(NewPayLoad RC, Act actPlugin)
-        {
-      
-            
+        {                  
             // After we send it we parse the driver response
             if (RC.Name == "ActionResult")
             {
@@ -457,12 +468,13 @@ namespace Amdocs.Ginger.CoreNET.Run
 
         }
 
-
+        
         static NewPayLoad GeneratePlatformActionPayload(IActPluginExecution ACT, Agent agent)
         {
             PlatformAction platformAction = ACT.GetAsPlatformAction();
 
             // TODO: remove from here and keep this class generic
+            // TODO: remove agent dependency 
             if (ACT is ActUIElement actUi)
             {
                 if (actUi.ElementLocateBy == eLocateBy.POMElement)
@@ -584,7 +596,18 @@ namespace Amdocs.Ginger.CoreNET.Run
                     GNI = GetGingerNodeInfoForPluginAction((ActPlugIn)act);
                     if (GNI != null)
                     {
-                        ExecuteActionOnPlugin((ActPlugIn)act, GNI);
+                        // For executing plugin action like database
+                        if (act is IActPluginExecution)
+                        {                            
+                            GingerNodeProxy gingerNodeProxy = new GingerNodeProxy(GNI);
+                            // Temp fixme for remote grid
+                            gingerNodeProxy.GingerGrid = WorkSpace.Instance.LocalGingerGrid;
+                            ExecutePlatformAction(gingerNodeProxy, (IActPluginExecution)act);
+                        }
+                        else
+                        {
+                            ExecuteActionOnPlugin((ActPlugIn)act, GNI);
+                        }
                     }
                 }
                 catch (Exception ex)

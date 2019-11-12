@@ -34,9 +34,11 @@ namespace GingerCore.Environments
 {
     public class Database : RepositoryItemBase 
     {
-        IDatabase mDatabaseImpl;
+        IDatabaseProxy mDatabaseProxy;
+
+        // IDatabase mDatabaseImpl;
         
-        ISQLDatabase mSQLDatabaseImpl { get { return (ISQLDatabase)mDatabaseImpl; } }
+        // ISQLDatabase mSQLDatabaseImpl { get { return (ISQLDatabase)mDatabaseImpl; } }
 
         // TODO: change to Service ID
 
@@ -128,19 +130,9 @@ namespace GingerCore.Environments
 
                 if (mDBType != value)
                 {
-                    mDatabaseImpl = null;
+                    mDatabaseProxy = null;
                     mDBType = value;
-                    OnPropertyChanged(nameof(DBType));
-
-                    // TODO: remove from here
-                    if (DBType == eDBTypes.Cassandra)
-                    {
-                        DBVer = "2.2";
-                    }
-                    else
-                    {
-                        DBVer = "";
-                    }
+                    OnPropertyChanged(nameof(DBType));                  
                 }
             } 
         }
@@ -278,11 +270,13 @@ namespace GingerCore.Environments
         public Boolean TestConnection()
         {
             VerifyDBImpl();
-            DbConnection dbConnection =  mSQLDatabaseImpl.GetDbConnection();            
-            dbConnection.Open();
-            bool b = dbConnection.State == ConnectionState.Open;
-            dbConnection.Close();
-            return b;
+            return mDatabaseProxy.TestConnection();
+            
+            //DbConnection dbConnection =  mSQLDatabaseImpl.GetDbConnection();            
+            //dbConnection.Open();
+            //bool b = dbConnection.State == ConnectionState.Open;
+            //dbConnection.Close();
+            //return b;
 
             // Add try catch !!!!!!!!!!!!!!!!!!
         }
@@ -293,77 +287,81 @@ namespace GingerCore.Environments
         public static IDBProvider iDBProvider { get; set; }
 
         void VerifyDBImpl()
-        {            
-            if (mDatabaseImpl != null) 
-            {
-                UpdateDBImplFromParams();
-                return;
-            }
-            
-            //TODO: Add check that the db is as DBType else replace or any prop change then reset conn string
-
-
-            if (iDBProvider == null)
-            {
-                throw new ArgumentNullException("iDBProvider cannot be null and must be initialized");
-            }
-            
-            mDatabaseImpl = iDBProvider.GetDBImpl(this);
-            UpdateDBParamsFromDBImpl();
-            UpdateDBImplFromParams();
-        }
-
-        private void UpdateDBParamsFromDBImpl()
         {
-            PropertyInfo[] properties = mDatabaseImpl.GetType().GetProperties();
-            foreach (PropertyInfo propertyInfo in properties)
+            if (mDatabaseProxy == null)
             {
-                DatabaseParamAttribute attr = (DatabaseParamAttribute)propertyInfo.GetCustomAttribute(typeof(DatabaseParamAttribute));
-                if (attr != null)
-                {
-                    // Add only missing params, will happen when Database is first created
-                    DatabaseParam databaseParam = (from x in DBParmas where x.Name == attr.Param select x).SingleOrDefault();
-                    if (databaseParam == null)
-                    {
-                        // TODO: get default value !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        DBParmas.Add(new DatabaseParam() { Name = propertyInfo.Name });
-                    }
-                    else
-                    {
-                        // Update impl
-                    }
-                }
+                mDatabaseProxy = iDBProvider.GetDatabaseProxy(this);
             }
+            //if (mDatabaseProxy != null)
+            //{
+            //    UpdateDBImplFromParams();
+            //    return;
+            //}
+
+            ////TODO: Add check that the db is as DBType else replace or any prop change then reset conn string
+
+
+            //if (iDBProvider == null)
+            //{
+            //    throw new ArgumentNullException("iDBProvider cannot be null and must be initialized");
+            //}
+
+            //mDatabaseImpl = iDBProvider.GetDBImpl(this);
+            //UpdateDBParamsFromDBImpl();
+            //UpdateDBImplFromParams();
         }
 
-        private void UpdateDBImplFromParams()
-        {            
-            if (!string.IsNullOrEmpty(ConnectionString ))
-            {
-                mDatabaseImpl.ConnectionString = ConnectionString;                
-            }
+        //private void UpdateDBParamsFromDBImpl()
+        //{
+        //    PropertyInfo[] properties = mDatabaseImpl.GetType().GetProperties();
+        //    foreach (PropertyInfo propertyInfo in properties)
+        //    {
+        //        DatabaseParamAttribute attr = (DatabaseParamAttribute)propertyInfo.GetCustomAttribute(typeof(DatabaseParamAttribute));
+        //        if (attr != null)
+        //        {
+        //            // Add only missing params, will happen when Database is first created
+        //            DatabaseParam databaseParam = (from x in DBParmas where x.Name == attr.Param select x).SingleOrDefault();
+        //            if (databaseParam == null)
+        //            {
+        //                // TODO: get default value !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //                DBParmas.Add(new DatabaseParam() { Name = propertyInfo.Name });
+        //            }
+        //            else
+        //            {
+        //                // Update impl
+        //            }
+        //        }
+        //    }
+        //}
+
+        //private void UpdateDBImplFromParams()
+        //{            
+        //    if (!string.IsNullOrEmpty(ConnectionString ))
+        //    {
+        //        mDatabaseProxy.ConnectionString = ConnectionString;                
+        //    }
 
 
-            // Update params using reflection
-            foreach (DatabaseParam databaseParam in DBParmas)
-            {
-                PropertyInfo propertyInfo = mDatabaseImpl.GetType().GetProperty(databaseParam.Name);
-                if (databaseParam.Value != null)
-                {
-                    if (propertyInfo.PropertyType == typeof(string))
-                    {
-                        propertyInfo.SetValue(mDatabaseImpl, databaseParam.Value);
-                    }
-                    else if (propertyInfo.PropertyType == typeof(int))
-                    {
-                        propertyInfo.SetValue(mDatabaseImpl, int.Parse((string)databaseParam.Value));
-                    }
+        //    // Update params using reflection
+        //    foreach (DatabaseParam databaseParam in DBParmas)
+        //    {
+        //        PropertyInfo propertyInfo = mDatabaseImpl.GetType().GetProperty(databaseParam.Name);
+        //        if (databaseParam.Value != null)
+        //        {
+        //            if (propertyInfo.PropertyType == typeof(string))
+        //            {
+        //                propertyInfo.SetValue(mDatabaseImpl, databaseParam.Value);
+        //            }
+        //            else if (propertyInfo.PropertyType == typeof(int))
+        //            {
+        //                propertyInfo.SetValue(mDatabaseImpl, int.Parse((string)databaseParam.Value));
+        //            }
 
-                    // TODO: handle other types
-                }
+        //            // TODO: handle other types
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
         public Boolean Connect(bool displayErrorPopup = false)
         {
@@ -400,15 +398,17 @@ namespace GingerCore.Environments
 
         public List<string> GetTablesList() // string Keyspace = null
         {
-            VerifyDBImpl();
+            return mDatabaseProxy.GetTablesList();
 
-            DbConnection dbConnection = mSQLDatabaseImpl.GetDbConnection();            
-            dbConnection.Open();
-            DataTable dataTable = dbConnection.GetSchema("Tables");
-            dbConnection.Close();
-            List<string> tables = mSQLDatabaseImpl.GetTablesList(dataTable);
+            //VerifyDBImpl();
 
-            return tables;
+            //DbConnection dbConnection = mSQLDatabaseImpl.GetDbConnection();            
+            //dbConnection.Open();
+            //DataTable dataTable = dbConnection.GetSchema("Tables");
+            //dbConnection.Close();
+            //List<string> tables = mSQLDatabaseImpl.GetTablesList(dataTable);
+
+            //return tables;
 
         }
 
@@ -462,26 +462,28 @@ namespace GingerCore.Environments
         // For SQLDatatbase
         public virtual DataTable ExecuteQuery(string query)
         {
-            VerifyDBImpl();
+            return mDatabaseProxy.ExecuteQuery(query);
 
-            DbConnection dbConnection = mSQLDatabaseImpl.GetDbConnection();            
-            dbConnection.Open();
-            DbCommand dbCommand = dbConnection.CreateCommand();
-            dbCommand.CommandType = CommandType.Text;
+            //VerifyDBImpl();
 
-            // TODO:
-            // dbCommand.CommandTimeout =  // !!!!!!!!!!!!!!!!!!!
-            // dbCommand.ExecuteScalar
-            //dbCommand.
+            //DbConnection dbConnection = mSQLDatabaseImpl.GetDbConnection();            
+            //dbConnection.Open();
+            //DbCommand dbCommand = dbConnection.CreateCommand();
+            //dbCommand.CommandType = CommandType.Text;
 
-            // DbDataAdapter dbDataAdapter = dbCommand.ad
+            //// TODO:
+            //// dbCommand.CommandTimeout =  // !!!!!!!!!!!!!!!!!!!
+            //// dbCommand.ExecuteScalar
+            ////dbCommand.
 
-            dbCommand.CommandText = query;
-            DbDataReader reader = dbCommand.ExecuteReader(CommandBehavior.SequentialAccess);                        
-            DataTable dataTable = new DataTable();
-            dataTable.Load(reader);
-            dbConnection.Close();
-            return dataTable;
+            //// DbDataAdapter dbDataAdapter = dbCommand.ad
+
+            //dbCommand.CommandText = query;
+            //DbDataReader reader = dbCommand.ExecuteReader(CommandBehavior.SequentialAccess);                        
+            //DataTable dataTable = new DataTable();
+            //dataTable.Load(reader);
+            //dbConnection.Close();
+            //return dataTable;
         }
 
         // !!!!!!!!!!!!!!!!! cleanup
@@ -501,14 +503,16 @@ namespace GingerCore.Environments
 
         public virtual int ExecuteNonQuery(string command)
         {
-            DbConnection dbConnection = mSQLDatabaseImpl.GetDbConnection();
-            DbCommand dbCommand = dbConnection.CreateCommand();
-            dbCommand.CommandText = command;
-            // dbCommand.CommandTimeout
-            dbConnection.Open();
-            int rows = dbCommand.ExecuteNonQuery();
-            dbConnection.Close();
-            return rows;
+            return mDatabaseProxy.ExecuteNonQuery(command);
+
+            //DbConnection dbConnection = mSQLDatabaseImpl.GetDbConnection();
+            //DbCommand dbCommand = dbConnection.CreateCommand();
+            //dbCommand.CommandText = command;
+            //// dbCommand.CommandTimeout
+            //dbConnection.Open();
+            //int rows = dbCommand.ExecuteNonQuery();
+            //dbConnection.Close();
+            //return rows;
         }
 
     }

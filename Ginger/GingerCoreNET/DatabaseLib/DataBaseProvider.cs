@@ -11,43 +11,46 @@ namespace Amdocs.Ginger.CoreNET.DatabaseLib
 {
     class DatabaseProvider : IDBProvider
     {
-        public IDatabase GetDBImpl(Database database)
+        public IDatabaseProxy GetDatabaseProxy(Database database)
         {
-            // TODO: 
-            // Start Plugin
-            // Save GingerNodeProxy on DatabaseImpl
-            // Provide Idatabase which goes via socket to the DB plugin to run DB actions
+            DatabaseProxy databaseProxy = new DatabaseProxy(database);
+            return (IDatabaseProxy)databaseProxy;
+
+            //// TODO: 
+            //// Start Plugin
+            //// Save GingerNodeProxy on DatabaseImpl
+            //// Provide Idatabase which goes via socket to the DB plugin to run DB actions
 
 
-            // Support old style - auto convert to ServiceID
-            if (database.ServiceID == null)
-            {
-                UpdateServiceIDFromDBType(database);
+            //// Support old style - auto convert to ServiceID
+            //if (database.ServiceID == null)
+            //{
+            //    UpdateServiceIDFromDBType(database);
 
-            }
-
-
-            PluginPackage pluginPackage;
-            IDatabase databaseImpl = null;
-
-            if (database.ServiceID != null)
-            {
-                pluginPackage = WorkSpace.Instance.PlugInsManager.GetDatabasePluginPackage(database.ServiceID);
-                string fileName = Path.Combine(pluginPackage.Folder, pluginPackage.StartupDLL);
-                Assembly assembly = Assembly.LoadFrom(fileName);
-                string serviceClass = GetServiceClass(database.ServiceID);
-                databaseImpl = (IDatabase)assembly.CreateInstance(serviceClass);
-                if (databaseImpl == null)
-                {
-                    throw new Exception("Cannot create class: " + serviceClass);
-                }
-                return databaseImpl;
-            }
+            //}
 
 
-            //TODO: FIXME: Temp until we switch to db run using sockets !!!
+            //PluginPackage pluginPackage;
+            //IDatabase databaseImpl = null;
 
-            return databaseImpl;
+            //if (database.ServiceID != null)
+            //{
+            //    pluginPackage = WorkSpace.Instance.PlugInsManager.GetDatabasePluginPackage(database.ServiceID);
+            //    string fileName = Path.Combine(pluginPackage.Folder, pluginPackage.StartupDLL);
+            //    Assembly assembly = Assembly.LoadFrom(fileName);
+            //    string serviceClass = GetServiceClass(database.ServiceID);
+            //    databaseImpl = (IDatabase)assembly.CreateInstance(serviceClass);
+            //    if (databaseImpl == null)
+            //    {
+            //        throw new Exception("Cannot create class: " + serviceClass);
+            //    }
+            //    return databaseImpl;
+            //}
+
+
+            ////TODO: FIXME: Temp until we switch to db run using sockets !!!
+
+            //return databaseImpl;
         }
 
 

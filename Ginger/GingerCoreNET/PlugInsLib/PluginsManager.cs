@@ -23,7 +23,6 @@ using Amdocs.Ginger.Common.Repository.PlugInsLib;
 using Amdocs.Ginger.CoreNET.Drivers.CommunicationProtocol;
 using Amdocs.Ginger.CoreNET.PlugInsLib;
 using Ginger.Plugin.Platform;
-using Ginger.Plugin.Platform;
 using GingerUtils;
 using Newtonsoft.Json;
 using System;
@@ -177,7 +176,7 @@ namespace Amdocs.Ginger.Repository
             }
             PluginPackage pluginPackage = (from x in mPluginPackages where x.PluginId == pluginId select x).SingleOrDefault();
 
-            Console.WriteLine("Loading Plugin Services from JSON...");
+            
 
             System.Diagnostics.Process proc = LoadPluginAndStartService(pluginPackage, serviceID);
 
@@ -190,6 +189,7 @@ namespace Amdocs.Ginger.Repository
         public static Process LoadPluginAndStartService(PluginPackage pluginPackage, string serviceID)
         {
             // TODO: only once !!!!!!!!!!!!!!!!!!!!!!!!! temp             
+            Console.WriteLine("Loading Plugin Services from JSON...");
             pluginPackage.LoadServicesFromJSON();
 
             if (pluginPackage == null)
@@ -297,6 +297,11 @@ namespace Amdocs.Ginger.Repository
             }
 
             PluginPackage pluginPackage = (from x in mPluginPackages where x.PluginId == pluginId select x).SingleOrDefault();
+            if (pluginPackage == null)
+            {
+                throw new Exception("Missing Plugin or plugin not installed: " + pluginId + "." + serviceId);
+            }
+
             PluginServiceInfo pluginServiceInfo = pluginPackage.GetService(serviceId);
             if (pluginServiceInfo != null)
             {

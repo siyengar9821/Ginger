@@ -92,7 +92,7 @@ namespace GingerCore.Streaming
         public void Start()
         {
             this.Start(8080);
-            Console.WriteLine("stream available at http://localhost:8000")
+            Console.WriteLine("stream available at http://localhost:8000");
         }
 
         public void Stop()

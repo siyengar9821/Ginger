@@ -23,6 +23,7 @@ using Amdocs.Ginger.Repository;
 using Ginger.Run.RunSetActions;
 using Ginger.UserControls;
 using GingerCore.GeneralLib;
+using GingerCore.streaming;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,12 +63,21 @@ namespace Ginger.Run
             RunSetActionsGrid.AddSeparator();
             RunSetActionsGrid.AddToolbarTool("@AddScript2_16x16.png", "Add Run Script Operation", AddScriptAction);
 
-
+            RunSetActionsGrid.AddToolbarTool("@AddScript2_16x16.png", "Add Live Stream Operation", AddStreamAction);
             RunSetActionsGrid.AddSeparator();
             RunSetActionsGrid.AddToolbarTool("@Run_16x16.png", "Run Selected", RunSelected);
             RunSetActionsGrid.AddToolbarTool("@RunAll_16x16.png", "Run All", RunAll);
             RunSetActionsGrid.AddSeparator();
             SetContentAndEventsListeners();
+        }
+
+        private void AddStreamAction(object sender, RoutedEventArgs e)
+        {
+            ActStream RSASS = new ActStream();
+            RSASS.Name = RSASS.Type;
+            RSASS.RunAt = RunSetActionBase.eRunAt.ExecutionStart;
+            mRunSetConfig.RunSetActions.Add(RSASS);
+            RunSetActionsGrid.Grid.SelectedItem = RSASS;
         }
 
         private void SetContentAndEventsListeners()

@@ -548,6 +548,7 @@ namespace GingerWPF.BusinessFlowsLib
                     else
                     {
                         mActivityPage.UpdateActivity(mContext.Activity);
+                        ToggleActivityPageUIButtons(!mExecutionIsInProgress);
                     }
                 }
                 else
@@ -640,11 +641,17 @@ namespace GingerWPF.BusinessFlowsLib
             }
         }
 
+        void ToggleActivityPageUIButtons(bool IsEnabled)
+        {
+            mActivityPage.SetUIElementsBehaverBasedOnRunnerStatus(IsEnabled);
+        }
+
         private void SetUIElementsBehaverDuringExecution()
         {
             this.Dispatcher.Invoke(() =>
             {
                 ToggleProcessButtons(!mExecutionIsInProgress);
+                ToggleActivityPageUIButtons(!mExecutionIsInProgress);
 
                 if (mExecutionIsInProgress)
                 {

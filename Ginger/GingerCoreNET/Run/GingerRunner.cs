@@ -631,6 +631,9 @@ namespace Ginger.Run
 
         private void SetupVirtualAgents()
         {
+
+            ObservableList<Agent> agents = WorkSpace.Instance.SolutionRepository.GetAllRepositoryItems<Agent>();
+
             if (WorkSpace.Instance != null && WorkSpace.Instance.RunsetExecutor != null && WorkSpace.Instance.RunsetExecutor.RunSetConfig != null)
             {
 
@@ -643,8 +646,6 @@ namespace Ginger.Run
 
                         if (applicationAgent.AgentName != null)
                         {
-                            ObservableList<Agent> agents = WorkSpace.Instance.SolutionRepository.GetAllRepositoryItems<Agent>();
-
                             var agent = (from a in agents where a.Name == applicationAgent.AgentName select a).FirstOrDefault();
 
                             //logic for if need to assign virtual agent

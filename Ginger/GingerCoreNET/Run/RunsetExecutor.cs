@@ -486,6 +486,7 @@ namespace Ginger.Run
                     Reporter.ToLog(eLogLevel.INFO, string.Format("######## Running Post-Execution {0} Operations", GingerDicser.GetTermResValue(eTermResKey.RunSet)));
                     WorkSpace.Instance.RunsetExecutor.ProcessRunSetActions(new List<RunSetActionBase.eRunAt> { RunSetActionBase.eRunAt.ExecutionEnd });
                 }
+                ReplaceirtualAgentsWithActual();
                 Reporter.ToLog(eLogLevel.INFO, string.Format("######## Creating {0} Execution Report", GingerDicser.GetTermResValue(eTermResKey.RunSet)));
                 CreateGingerExecutionReportAutomaticly();
                 Reporter.ToLog(eLogLevel.INFO, string.Format("######## Doing {0} Execution Cleanup", GingerDicser.GetTermResValue(eTermResKey.RunSet)));
@@ -500,6 +501,36 @@ namespace Ginger.Run
                 mRunSetConfig.IsRunning = false;
             }
         }
+        /// <summary>
+        /// WIll replace the virtual agents with actual one, generally need to be called at runset execution end. TO avoid issues in Save
+        /// </summary>
+        private void ReplaceirtualAgentsWithActual()
+        {
+
+            ObservableList<Agent> agents = WorkSpace.Instance.SolutionRepository.GetAllRepositoryItems<Agent>();
+
+            foreach (GingerRunner GR in Runners)
+            {
+
+                foreach (ApplicationAgent applicationAgent in GR.ApplicationAgents)
+                {
+                    if (applicationAgent.Agent.IsVirtual)
+                    {
+                        if (applicationAgent.Agent.ParentGuid != null)
+                        {
+                            applicationAgent.Agent = agents.Where(x => x.Guid == applicationAgent.Agent.ParentGuid).First();
+                        }
+                    }
+
+                    mRunSetConfig.ActiveAgentList.Remove(applicationAgent.Agent);
+
+                }
+
+
+
+            }
+        }
+
         public void CreateGingerExecutionReportAutomaticly()
         {
             HTMLReportsConfiguration currentConf = WorkSpace.Instance.Solution.HTMLReportsConfigurationSetList.Where(x => (x.IsSelected == true)).FirstOrDefault();

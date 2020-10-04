@@ -1301,9 +1301,12 @@ namespace Ginger.Run
 
             UpdateRunsetALMDefectsOpeningTabHeader();
         }
-
+        /// <summary>
+        /// Will Save RUnsetconfig ,Runset cannot be saved during execution because it will write virtual runset in config and will cause issues
+        /// </summary>
         internal void SaveRunSetConfig()
         {
+            if (CheckIfExecutionIsInProgress()) return;
             try
             {
                 mRunSetConfig.AllowAutoSave = false;

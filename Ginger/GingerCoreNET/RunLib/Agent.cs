@@ -478,28 +478,58 @@ namespace GingerCore
         /// <returns></returns>
         public bool SupportVirtualAgent()
         {
+            if(AgentType==eAgentType.Service)
+            {
+                return false;
+            }
             try
             {
 
-                if (DriverClass == null)
-            {
-                DriverClass = RepositoryItemHelper.RepositoryItemFactory.GetDriverType(this);
+                if (RepositoryItemHelper.RepositoryItemFactory != null)
+                {
                     if (DriverClass == null)
                     {
-                        return false;
+                        DriverClass = RepositoryItemHelper.RepositoryItemFactory.GetDriverType(this);
+                        if (DriverClass == null)
+                        {
+                            return false;
+                        }
+                        if (DriverClass.GetInterfaces().Contains(typeof(IVirtualDriver)))
+                        {
+                            return true;
+                        }
                     }
-            }
-
- 
-                if (DriverClass.GetInterfaces().Contains(typeof(IVirtualDriver)))
-                {
-                    return true;
                 }
+                else
+                {
+                    switch(DriverType)
+                    {
+                        case eDriverType.DOSConsole:
+                        case eDriverType.InternalBrowser:
+                        case eDriverType.NA:
+                        case eDriverType.PowerBuilder:
+                        case eDriverType.SeleniumChrome:
+                        case eDriverType.SeleniumEdge:
+                        case eDriverType.SeleniumFireFox:
+                        case eDriverType.SeleniumIE:
+                        case eDriverType.SeleniumPhantomJS:
+                        case eDriverType.SeleniumRemoteWebDriver:
+                        case eDriverType.UnixShell:
+                        case eDriverType.WebServices:
+                        case eDriverType.WindowsAutomation:
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+
+
+              
             }
             //if the exceptions are throws we consider it to be not supportable for virtual agents
-            catch(Exception e)
+            catch (Exception e)
             {
-                
+
 
             }
             return false;
